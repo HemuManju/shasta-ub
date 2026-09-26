@@ -7,17 +7,8 @@ import osmnx as ox
 import pandas as pd
 import networkx as nx
 
-import os
-
+from shasta.assets import get_asset_path
 from shasta.preprocessing.utils import extract_building_info
-
-# Import assests
-directories = list(filter(os.path.isdir, os.listdir(os.getcwd())))
-if 'assets' in directories:
-    assets_root = os.path.join('.', 'assets')
-else:
-    raise FileNotFoundError("Assests folder is not found under root directory")
-
 
 class Map:
     def __init__(self) -> None:
@@ -62,24 +53,12 @@ class Map:
         Raises
         ------
         FileNotFoundError
-            If the experiment config is none, raises a file not found error
+            If the requested map cannot be found
         """
         self.experiment_config = experiment_config
 
-        # Read path for ths assets
-        try:
-            self.asset_path = '/'.join(
-                [assets_root, self.experiment_config['map_to_use']]
-            )
-        except FileNotFoundError:
-            try:
-                self.asset_path = '/'.join(
-                    [assets_root, self.experiment_config['map_to_use']]
-                )
-            except FileNotFoundError:
-                raise FileNotFoundError(
-                    f"Please verify the {self.experiment_config['map_to_use']} is available in asset folder"
-                )
+        # Read path for the assets
+        self.asset_path = get_asset_path(self.experiment_config['map_to_use'])
 
         # Initialize the assests
         self._affine_transformation_and_graph()

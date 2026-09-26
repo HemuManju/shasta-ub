@@ -13,13 +13,10 @@ def extract_building_info(osm_path, save_fig=False):
     read_path = osm_path
     G = ox.graph_from_xml(read_path, retain_all=True)
 
-    # TODO: This method doesn't work if the building info is not there in OSM
-    nodes, streets = ox.graph_to_gdfs(G)
-
-    west, north, east, south = nodes.geometry.total_bounds
-    polygon = ox.utils_geo.bbox_to_poly(north, south, east, west)
-    gdf = ox.geometries.geometries_from_polygon(polygon, tags={'building': True})
-    buildings_proj = ox.project_gdf(gdf, to_crs="EPSG:4326").to_crs(4328)
+    # Read building footprints from the local file (no network access needed)
+    gdf = ox.features.features_from_xml(read_path, tags={'building': True})
+    gdf = gdf[gdf.geom_type.isin(['Polygon', 'MultiPolygon'])]
+    buildings_proj = ox.projection.project_gdf(gdf, to_crs="EPSG:4326").to_crs(4328)
 
     # Building Info
     building_info = buildings_proj.copy()

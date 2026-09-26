@@ -2,11 +2,10 @@
 
 # This work is licensed under the terms of the MIT license.
 # For a copy, see <https://opensource.org/licenses/MIT>.
-from abc import ABCMeta, abstractmethod
-from future.utils import with_metaclass
+from abc import ABC, abstractmethod
 
 
-class BaseExperiment(with_metaclass(ABCMeta, object)):
+class BaseExperiment(ABC):
     def __init__(self, config, core, experiment_config=None, *args, **kargs):
         """The base experiment which other experiments should inherit
 

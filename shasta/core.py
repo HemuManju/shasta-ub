@@ -1,7 +1,3 @@
-import os
-import psutil
-import signal
-
 import pybullet as p
 from pybullet_utils import bullet_client as bc
 
@@ -11,18 +7,10 @@ from .map import Map
 from .utils import get_initial_positions
 
 
-def kill_all_servers():
-    """Kill all PIDs that start with Carla"""
-    processes = [p for p in psutil.process_iter() if "carla" in p.name().lower()]
-    for process in processes:
-        os.kill(process.pid, signal.SIGKILL)
-
-
 class ShastaCore:
     """
-    Class responsible of handling all the different CARLA functionalities,
-    such as server-client connecting, actor spawning,
-    and getting the sensors data.
+    Owns the pybullet physics client, the map and the actors; spawns actors
+    and advances the simulation.
     """
 
     def __init__(self, config, actor_groups: dict = None):
@@ -38,7 +26,6 @@ class ShastaCore:
         self.world = World(config)
         self.map = Map()
 
-        self.init_server()
         self._setup_physics_client()
 
     def _setup_physics_client(self):
@@ -99,12 +86,8 @@ class ShastaCore:
         """
         return self.physics_client
 
-    def init_server(self):
-        """Start a server on a random port"""
-        pass
-
     def setup_experiment(self, experiment_config):
-        """Initialize the hero and sensors"""
+        """Load the map and spawn the actors"""
 
         # Load the environment and setup the map
         self.map.setup(experiment_config)
@@ -135,7 +118,7 @@ class ShastaCore:
         return self.map
 
     def reset(self):
-        """This function resets / spawns the hero vehicle and its sensors"""
+        """This function resets / spawns the actors"""
 
         # Reset all the actors
         for group_id in self.actor_groups:
@@ -145,13 +128,12 @@ class ShastaCore:
 
             for actor in self.actor_groups[group_id]:
                 # Reset the actor and collect the observation
-                print(actor.init_pos)
                 actor.reset()
 
         return None
 
     def spawn_actors(self):
-        """Spawns vehicles and walkers, also setting up the Traffic Manager and its parameters"""
+        """Spawn every actor of every group around a random point on the map"""
         for group_id in self.actor_groups:
             # Check if the entry is a list or not
             if not isinstance(self.actor_groups[group_id], list):
@@ -168,7 +150,7 @@ class ShastaCore:
                 else:
                     actor.init_pos = self.map.convert_to_cartesian(actor.init_pos)
 
-                self.world.spawn_actor(actor, position)
+                self.world.spawn_actor(actor, actor.init_pos)
 
     def get_actor_groups(self):
         """Get the actor groups
@@ -197,7 +179,7 @@ class ShastaCore:
         return self.actor_groups[group_id]
 
     def tick(self):
-        """Performs one tick of the simulation, moving all actors, and getting the sensor data"""
+        """Performs one tick of the simulation, and collect the observations of all actors"""
         observations = {}
 
         # Tick once the simulation
@@ -215,4 +197,4 @@ class ShastaCore:
 
     def close_simulation(self):
         """Close the simulation"""
-        p.disconnect(self.physics_client._client)
+        self.physics_client.disconnect()

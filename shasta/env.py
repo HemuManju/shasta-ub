@@ -3,9 +3,7 @@
 # This work is licensed under the terms of the MIT license.
 # For a copy, see <https://opensource.org/licenses/MIT>.
 
-from __future__ import print_function
-
-import gym
+import gymnasium as gym
 
 from .core import ShastaCore
 
@@ -46,27 +44,20 @@ class ShastaEnv(gym.Env):
 
         self.reset()
 
-    def reset(self):
-        """Reset the simulation
-
-        Returns
-        -------
-        [type]
-            [description]
-        """
+    def reset(self, *, seed=None, options=None):
+        """Reset the simulation and return ``(observation, info)``."""
+        super().reset(seed=seed)
         self.experiment.reset()
         self.core.reset()
 
         # Tick once and get the observations
         raw_data = self.core.tick()
-        observation, _ = self.experiment.get_observation(raw_data, self.core)
-        print('-' * 32)
+        observation, info = self.experiment.get_observation(raw_data, self.core)
 
-        return observation
+        return observation, info
 
     def step(self, action):
-        """Computes one tick of the environment in order to return the new observation,
-        as well as the rewards"""
+        """Advance one step; returns ``(observation, reward, terminated, truncated, info)``."""
 
         self.experiment.apply_actions(action, self.core)
         raw_data = self.core.tick()
@@ -75,7 +66,10 @@ class ShastaEnv(gym.Env):
         done = self.experiment.get_done_status(observation, self.core)
         reward = self.experiment.compute_reward(observation, self.core)
 
-        return observation, reward, done, info
+        if isinstance(done, (list, tuple)):
+            done = all(done)
+
+        return observation, reward, bool(done), False, info
 
     def close(self):
         self.core.close_simulation()

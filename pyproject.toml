@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ihuman-shasta"
+version = "0.1.0"
+description = "SHASTA: a pybullet simulator for human-swarm teaming on real city maps"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "iHuman Lab" }]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pandas",
+    "networkx",
+    "osmnx>=2.0",
+    "scikit-learn",
+    "pybullet",
+    "gymnasium",
+    "pyyaml",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+gui = ["pyglet"]
+docs = ["sphinx"]
+test = ["pytest"]
+
+[project.scripts]
+shasta = "shasta.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["shasta", "shasta.*"]
+exclude = ["shasta.preprocessing.lib*", "shasta.preprocessing.chicago*"]
+
+[tool.setuptools.package-data]
+shasta = ["data/*.yml"]
+"shasta.assets" = ["vehicles/*", "vehicles/meshes/*", "buffalo-small/*", "buffalo-small/meshes/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
