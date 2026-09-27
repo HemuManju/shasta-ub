@@ -1,0 +1,53 @@
+shasta
+======
+
+.. py:module:: shasta
+
+.. autoapi-nested-parse::
+
+   SHASTA: Simulator for Human-Autonomy and Swarm Teaming Applications.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/shasta/__main__/index
+   /autoapi/shasta/actor/index
+   /autoapi/shasta/actors/index
+   /autoapi/shasta/assets/index
+   /autoapi/shasta/base_experiment/index
+   /autoapi/shasta/cli/index
+   /autoapi/shasta/config/index
+   /autoapi/shasta/core/index
+   /autoapi/shasta/demo/index
+   /autoapi/shasta/env/index
+   /autoapi/shasta/experiments/index
+   /autoapi/shasta/gui/index
+   /autoapi/shasta/interaction/index
+   /autoapi/shasta/map/index
+   /autoapi/shasta/preprocessing/index
+   /autoapi/shasta/primitives/index
+   /autoapi/shasta/utils/index
+   /autoapi/shasta/visualize/index
+   /autoapi/shasta/world/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.__version__
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   :value: '0.1.0'
+
+

@@ -1,0 +1,100 @@
+shasta.preprocessing.osm2world
+==============================
+
+.. py:module:: shasta.preprocessing.osm2world
+
+.. autoapi-nested-parse::
+
+   Locate (and download on first use) the OSM2World jar used to build maps.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.preprocessing.osm2world.RELEASE_URL
+   shasta.preprocessing.osm2world.CACHE_DIR
+   shasta.preprocessing.osm2world.JAR_NAME
+   shasta.preprocessing.osm2world.JAVA_MINIMUM
+   shasta.preprocessing.osm2world.JAVA_CACHE
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.preprocessing.osm2world._candidates
+   shasta.preprocessing.osm2world.find_osm2world
+   shasta.preprocessing.osm2world.download_osm2world
+   shasta.preprocessing.osm2world.ensure_osm2world
+   shasta.preprocessing.osm2world._download
+   shasta.preprocessing.osm2world._java_major
+   shasta.preprocessing.osm2world._java_candidates
+   shasta.preprocessing.osm2world.find_java
+   shasta.preprocessing.osm2world.download_java
+   shasta.preprocessing.osm2world.check_java
+
+
+Module Contents
+---------------
+
+.. py:data:: RELEASE_URL
+   :value: 'https://github.com/HemuManju/shasta-ub/releases/download/osm2world-v1/osm2world.zip'
+
+
+.. py:data:: CACHE_DIR
+
+.. py:data:: JAR_NAME
+   :value: 'OSM2WORLD.jar'
+
+
+.. py:function:: _candidates()
+
+.. py:function:: find_osm2world()
+
+   Return the directory holding ``OSM2WORLD.jar`` and ``lib/``, or None.
+
+
+.. py:function:: download_osm2world(url=RELEASE_URL)
+
+   Download and unpack the jar (about 27 MB) into the user cache.
+
+
+.. py:function:: ensure_osm2world()
+
+.. py:data:: JAVA_MINIMUM
+   :value: 11
+
+
+.. py:data:: JAVA_CACHE
+
+.. py:function:: _download(url, target)
+
+   Fetch ``url`` to ``target`` (some hosts reject urllib's default user agent).
+
+
+.. py:function:: _java_major(java)
+
+   Major version of a java executable, or None if it cannot be read.
+
+
+.. py:function:: _java_candidates()
+
+.. py:function:: find_java(minimum=JAVA_MINIMUM)
+
+   Path to a Java runtime of at least ``minimum``, or None.
+
+
+.. py:function:: download_java(version=JAVA_MINIMUM)
+
+   Download a small Java runtime (Temurin JRE, about 45 MB) into the user cache.
+
+
+.. py:function:: check_java(minimum=JAVA_MINIMUM)
+
+   Return the path of a suitable ``java`` or raise an error that says how to get one.
+
+

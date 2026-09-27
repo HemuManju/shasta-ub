@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.core &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../shasta.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.core</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shasta.core</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pybullet</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pybullet_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">bullet_client</span> <span class="k">as</span> <span class="n">bc</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.world</span><span class="w"> </span><span class="kn">import</span> <span class="n">World</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.map</span><span class="w"> </span><span class="kn">import</span> <span class="n">Map</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_initial_positions</span>
+
+
+<div class="viewcode-block" id="ShastaCore">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShastaCore</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Owns the pybullet physics client, the map and the actors; spawns actors</span>
+<span class="sd">    and advances the simulation.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">actor_groups</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize the server and client"""</span>
+<div class="viewcode-block" id="ShastaCore.config">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="ShastaCore.actor_groups">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.actor_groups">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span> <span class="o">=</span> <span class="n">actor_groups</span></div>
+
+
+        <span class="c1"># Verify if the actor groups is a dictionary</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'Actor groups should be of type dict'</span><span class="p">)</span>
+
+        <span class="c1"># Setup world and map</span>
+<div class="viewcode-block" id="ShastaCore.world">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.world">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world</span> <span class="o">=</span> <span class="n">World</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ShastaCore.map">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.map">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span></div>
+
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_physics_client</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ShastaCore._setup_physics_client">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore._setup_physics_client">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setup_physics_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Setup the physics client</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        """</span>
+        <span class="c1"># Usage mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'headless'</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">BulletClient</span><span class="p">(</span><span class="n">connection_mode</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="s1">'--background_color_red=0.85 --background_color_green=0.85 --background_color_blue=0.85'</span>  <span class="c1"># noqa</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">BulletClient</span><span class="p">(</span>
+                <span class="n">connection_mode</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">GUI</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Set the camera parameters</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camer_distance</span> <span class="o">=</span> <span class="mf">150.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera_yaw</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera_pitch</span> <span class="o">=</span> <span class="o">-</span><span class="mf">89.999</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">camera_target_position</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">resetDebugVisualizerCamera</span><span class="p">(</span>
+                <span class="n">cameraDistance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camer_distance</span><span class="p">,</span>
+                <span class="n">cameraYaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_yaw</span><span class="p">,</span>
+                <span class="n">cameraPitch</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_pitch</span><span class="p">,</span>
+                <span class="n">cameraTargetPosition</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">camera_target_position</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">configureDebugVisualizer</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">COV_ENABLE_GUI</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Set gravity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">setGravity</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.81</span><span class="p">)</span>
+
+        <span class="c1"># Set parameters for simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">setPhysicsEngineParameter</span><span class="p">(</span>
+            <span class="n">fixedTimeStep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">'time_step'</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">numSubSteps</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">numSolverIterations</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Inject physics client</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">physics_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">physics_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.get_physics_client">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.get_physics_client">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_physics_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Ge the physics client</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            The bullet physics client</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.setup_experiment">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.setup_experiment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">experiment_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Load the map and spawn the actors"""</span>
+
+        <span class="c1"># Load the environment and setup the map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">experiment_config</span><span class="p">)</span>
+        <span class="n">read_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">asset_path</span> <span class="o">+</span> <span class="s1">'/environment_collision_free.urdf'</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">load_world_model</span><span class="p">(</span><span class="n">read_path</span><span class="p">)</span>
+
+        <span class="c1"># Spawn the actors in the physics client</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spawn_actors</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.get_world">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.get_world">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_world</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get the World object from the simulation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            The world object</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">world</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.get_map">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.get_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get the Map object from the simulation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        object</span>
+<span class="sd">            The map object</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.reset">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""This function resets / spawns the actors"""</span>
+
+        <span class="c1"># Reset all the actors</span>
+        <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">:</span>
+            <span class="c1"># Check if the entry is a list or not</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]]</span>
+
+            <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]:</span>
+                <span class="c1"># Reset the actor and collect the observation</span>
+                <span class="n">actor</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.spawn_actors">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.spawn_actors">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spawn_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Spawn every actor of every group around a random point on the map"""</span>
+        <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">:</span>
+            <span class="c1"># Check if the entry is a list or not</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]]</span>
+
+            <span class="c1"># Spawn the actors</span>
+            <span class="n">spawn_point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">get_cartesian_spawn_points</span><span class="p">()</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="n">get_initial_positions</span><span class="p">(</span>
+                <span class="n">spawn_point</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">])</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">actor</span><span class="p">,</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">],</span> <span class="n">positions</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">actor</span><span class="o">.</span><span class="n">init_pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">actor</span><span class="o">.</span><span class="n">init_pos</span> <span class="o">=</span> <span class="n">position</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">actor</span><span class="o">.</span><span class="n">init_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">convert_to_cartesian</span><span class="p">(</span><span class="n">actor</span><span class="o">.</span><span class="n">init_pos</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">world</span><span class="o">.</span><span class="n">spawn_actor</span><span class="p">(</span><span class="n">actor</span><span class="p">,</span> <span class="n">actor</span><span class="o">.</span><span class="n">init_pos</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.get_actor_groups">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.get_actor_groups">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_actor_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get the actor groups</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            The actor groups as a dict with group id as the key</span>
+<span class="sd">            list of actors as the value</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.get_actors_by_group_id">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.get_actors_by_group_id">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_actors_by_group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get a list of actor given by group id</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        group_id : int</span>
+<span class="sd">            Group id to be returned</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list</span>
+<span class="sd">            A list of actor given the group id</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.tick">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.tick">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Performs one tick of the simulation, and collect the observations of all actors"""</span>
+        <span class="n">observations</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Tick once the simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">stepSimulation</span><span class="p">()</span>
+
+        <span class="c1"># Collect the raw observation from all the actors in each actor group</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">:</span>
+            <span class="n">obs_from_each_actor</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">actor</span><span class="o">.</span><span class="n">get_observation</span><span class="p">()</span> <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actor_groups</span><span class="p">[</span><span class="n">group</span><span class="p">]</span>
+            <span class="p">]</span>
+
+            <span class="n">observations</span><span class="p">[</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_from_each_actor</span>
+
+        <span class="k">return</span> <span class="n">observations</span></div>
+
+
+<div class="viewcode-block" id="ShastaCore.close_simulation">
+<a class="viewcode-back" href="../../autoapi/shasta/core/index.html#shasta.core.ShastaCore.close_simulation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close_simulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Close the simulation"""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

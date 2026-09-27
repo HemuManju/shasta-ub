@@ -1,0 +1,53 @@
+shasta.preprocessing.utils
+==========================
+
+.. py:module:: shasta.preprocessing.utils
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.preprocessing.utils.CATEGORY_TAGS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.preprocessing.utils.extract_building_info
+   shasta.preprocessing.utils.building_category
+   shasta.preprocessing.utils.extract_building_footprints
+   shasta.preprocessing.utils.save_buildings_map
+   shasta.preprocessing.utils.extract_path_info
+
+
+Module Contents
+---------------
+
+.. py:function:: extract_building_info(osm_path, save_fig=False)
+
+   Perfrom initial building setup.
+
+
+.. py:data:: CATEGORY_TAGS
+
+.. py:function:: building_category(building=None, amenity=None)
+
+   Sort an OSM building into civic, worship, commercial, residential, industrial or other.
+
+
+.. py:function:: extract_building_footprints(osm_path)
+
+   Building outlines from the local .osm file.
+
+   Returns a list of ``(outline, category)`` where ``outline`` is an (n, 2)
+   [lat, lon] array and ``category`` comes from :func:`building_category`.
+
+
+.. py:function:: save_buildings_map(osm_path)
+
+.. py:function:: extract_path_info(osm_path)
+

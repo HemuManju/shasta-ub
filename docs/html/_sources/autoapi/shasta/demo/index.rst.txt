@@ -1,0 +1,28 @@
+shasta.demo
+===========
+
+.. py:module:: shasta.demo
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.demo.run_demo
+   shasta.demo.run_gui
+
+
+Module Contents
+---------------
+
+.. py:function:: run_demo(gui=False, map_name='buffalo-small', n_uav=4, n_ugv=3, steps=2000)
+
+   Send a UAV group and a UGV group to random map nodes and report progress.
+
+
+.. py:function:: run_gui(map_name='buffalo-small', n_uav_groups=2, n_ugv_groups=2, uavs=4, ugvs=3, n_targets=3, time_limit=None, seed=None)
+
+   Open the human interface: command UAV/UGV groups to reach mission targets.
+
+

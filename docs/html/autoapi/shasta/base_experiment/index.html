@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.base_experiment &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="shasta.cli" href="../cli/index.html" />
+    <link rel="prev" title="shasta.assets" href="../assets/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">shasta</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../__main__/index.html">shasta.__main__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../actor/index.html">shasta.actor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../actors/index.html">shasta.actors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../assets/index.html">shasta.assets</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">shasta.base_experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/index.html">shasta.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/index.html">shasta.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/index.html">shasta.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../demo/index.html">shasta.demo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../env/index.html">shasta.env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../experiments/index.html">shasta.experiments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../gui/index.html">shasta.gui</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../interaction/index.html">shasta.interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../map/index.html">shasta.map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../preprocessing/index.html">shasta.preprocessing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../primitives/index.html">shasta.primitives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html">shasta.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../visualize/index.html">shasta.visualize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../world/index.html">shasta.world</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#attributes">Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.base_experiment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/shasta/base_experiment/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-shasta.base_experiment">
+<span id="shasta-base-experiment"></span><h1>shasta.base_experiment<a class="headerlink" href="#module-shasta.base_experiment" title="Link to this heading"></a></h1>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#shasta.base_experiment.BaseExperiment" title="shasta.base_experiment.BaseExperiment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseExperiment</span></code></a></p></td>
+<td><p>Helper class that provides a standard way to create an ABC using</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">BaseExperiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>Helper class that provides a standard way to create an ABC using
+inheritance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.config">
+<span class="sig-name descname"><span class="pre">config</span></span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.core">
+<span class="sig-name descname"><span class="pre">core</span></span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.core" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.exp_config">
+<span class="sig-name descname"><span class="pre">exp_config</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.exp_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.exp_config" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.reset" title="Link to this definition"></a></dt>
+<dd><p>Called at the beginning and each time the simulation is reset</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.get_action_space">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_action_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.get_action_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.get_action_space" title="Link to this definition"></a></dt>
+<dd><p>Returns the action space</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.get_observation_space">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_observation_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.get_observation_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.get_observation_space" title="Link to this definition"></a></dt>
+<dd><p>Returns the observation space</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.get_actions">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_actions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.get_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.get_actions" title="Link to this definition"></a></dt>
+<dd><p>Returns the actions</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.apply_actions">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">apply_actions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.apply_actions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.apply_actions" title="Link to this definition"></a></dt>
+<dd><p>Given the action, applies the action to group or individual actor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>action</strong> – value outputted by the policy</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.get_observation">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_observation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.get_observation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.get_observation" title="Link to this definition"></a></dt>
+<dd><p>Function to do all the post processing of observations (sensor data).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sensor_data</strong> – dictionary {sensor_name: sensor_data}</p>
+</dd>
+</dl>
+<p>Should return a tuple or list with two items, the processed observations,
+as well as a variable with additional information about such observation.
+The information variable can be empty</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.get_done_status">
+<span class="sig-name descname"><span class="pre">get_done_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.get_done_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.get_done_status" title="Link to this definition"></a></dt>
+<dd><p>Returns whether or not the experiment has to end</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shasta.base_experiment.BaseExperiment.compute_reward">
+<span class="sig-name descname"><span class="pre">compute_reward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">core</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/base_experiment.html#BaseExperiment.compute_reward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.base_experiment.BaseExperiment.compute_reward" title="Link to this definition"></a></dt>
+<dd><p>Computes the reward</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../assets/index.html" class="btn btn-neutral float-left" title="shasta.assets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../cli/index.html" class="btn btn-neutral float-right" title="shasta.cli" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

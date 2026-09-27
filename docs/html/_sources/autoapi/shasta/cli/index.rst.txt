@@ -1,0 +1,22 @@
+shasta.cli
+==========
+
+.. py:module:: shasta.cli
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.cli.main
+   shasta.cli._dispatch
+
+
+Module Contents
+---------------
+
+.. py:function:: main(argv=None)
+
+.. py:function:: _dispatch(args, parser)
+

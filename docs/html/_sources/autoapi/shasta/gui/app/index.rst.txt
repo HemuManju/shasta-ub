@@ -1,0 +1,212 @@
+shasta.gui.app
+==============
+
+.. py:module:: shasta.gui.app
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.gui.app.SIDE_WIDTH
+   shasta.gui.app.SPEEDS
+   shasta.gui.app.HELP
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.gui.app.CameraInset
+   shasta.gui.app.ShastaGUI
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.gui.app._hex
+
+
+Module Contents
+---------------
+
+.. py:data:: SIDE_WIDTH
+   :value: 400
+
+
+.. py:data:: SPEEDS
+   :value: (1, 2, 4, 8)
+
+
+.. py:data:: HELP
+   :value: ('Click node: target  |  Enter: send  |  Shift+click / Shift+drag: multi-select  |  wheel: zoom ...
+
+
+.. py:function:: _hex(color)
+
+.. py:class:: CameraInset(physics_client)
+
+   Small pybullet camera image that follows the selected group.
+
+
+   .. py:attribute:: size
+      :value: (320, 240)
+
+
+
+   .. py:attribute:: client
+
+
+   .. py:attribute:: surface
+      :value: None
+
+
+
+   .. py:attribute:: projection
+
+
+   .. py:method:: refresh(centroid, yaw)
+
+
+.. py:class:: ShastaGUI(commander, size=(1280, 800))
+
+   Human interface: watch the swarm on the map and command groups.
+
+
+   .. py:attribute:: screen
+
+
+   .. py:attribute:: size
+      :value: (1280, 800)
+
+
+
+   .. py:attribute:: commander
+
+
+   .. py:attribute:: map_rect
+
+
+   .. py:attribute:: view
+
+
+   .. py:attribute:: manager
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: pending
+      :value: None
+
+
+
+   .. py:attribute:: speed_index
+      :value: 0
+
+
+
+   .. py:attribute:: running
+      :value: True
+
+
+
+   .. py:attribute:: dragging
+      :value: False
+
+
+
+   .. py:attribute:: box_start
+      :value: None
+
+
+
+   .. py:attribute:: box_end
+      :value: None
+
+
+
+   .. py:attribute:: last_click
+      :value: (0, None)
+
+
+
+   .. py:attribute:: camera
+      :value: None
+
+
+
+   .. py:attribute:: show_camera
+      :value: False
+
+
+
+   .. py:attribute:: frame
+      :value: 0
+
+
+
+   .. py:attribute:: _texts
+
+
+   .. py:method:: _build_panel()
+
+
+   .. py:method:: _shift()
+
+
+   .. py:method:: select_group(group_id, add=False)
+
+
+   .. py:method:: select_type(kind)
+
+
+   .. py:method:: send_pending()
+
+
+   .. py:method:: send_all_pending()
+
+
+   .. py:method:: toggle_pause()
+
+
+   .. py:method:: _change_speed(delta)
+
+
+   .. py:method:: _apply_speed()
+
+
+   .. py:method:: toggle_camera()
+
+
+   .. py:method:: _marker_hit(pos)
+
+
+   .. py:method:: _map_click(pos)
+
+
+   .. py:method:: _finish_box(end)
+
+
+   .. py:method:: handle_event(event)
+
+
+   .. py:method:: _set_text(key, element, html)
+
+
+   .. py:method:: _refresh_text(force=False)
+
+
+   .. py:method:: draw()
+
+
+   .. py:method:: step(dt=1 / 30)
+
+
+   .. py:method:: run(max_frames=None)
+
+

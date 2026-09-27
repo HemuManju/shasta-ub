@@ -1,0 +1,212 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.assets &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="shasta.base_experiment" href="../base_experiment/index.html" />
+    <link rel="prev" title="shasta.actors.vehicles" href="../actors/vehicles/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">shasta</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../__main__/index.html">shasta.__main__</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../actor/index.html">shasta.actor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../actors/index.html">shasta.actors</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">shasta.assets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../base_experiment/index.html">shasta.base_experiment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../cli/index.html">shasta.cli</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../config/index.html">shasta.config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../core/index.html">shasta.core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../demo/index.html">shasta.demo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../env/index.html">shasta.env</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../experiments/index.html">shasta.experiments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../gui/index.html">shasta.gui</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../interaction/index.html">shasta.interaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../map/index.html">shasta.map</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../preprocessing/index.html">shasta.preprocessing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../primitives/index.html">shasta.primitives</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../utils/index.html">shasta.utils</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../visualize/index.html">shasta.visualize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../world/index.html">shasta.world</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#attributes">Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#package-contents">Package Contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">API Reference</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.assets</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/autoapi/shasta/assets/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-shasta.assets">
+<span id="shasta-assets"></span><h1>shasta.assets<a class="headerlink" href="#module-shasta.assets" title="Link to this heading"></a></h1>
+<p>Locate SHASTA assets (vehicle models and maps).</p>
+<p>Search order for a named map or file:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$SHASTA_ASSETS</span></code> (a directory you control, e.g. a full copy of the maps)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./assets</span></code> in the current working directory</p></li>
+<li><p>the assets bundled inside the installed package</p></li>
+</ol>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#shasta.assets._BUNDLED" title="shasta.assets._BUNDLED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_BUNDLED</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#shasta.assets.assets_root" title="shasta.assets.assets_root"><code class="xref py py-obj docutils literal notranslate"><span class="pre">assets_root</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#shasta.assets._search_roots" title="shasta.assets._search_roots"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_search_roots</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#shasta.assets.get_asset_path" title="shasta.assets.get_asset_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_asset_path</span></code></a>(*parts)</p></td>
+<td><p>Return the first existing path for <code class="docutils literal notranslate"><span class="pre">parts</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;vehicles&quot;,</span> <span class="pre">&quot;x.urdf&quot;</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#shasta.assets.list_maps" title="shasta.assets.list_maps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_maps</span></code></a>()</p></td>
+<td><p>Names of the maps that can currently be found.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="shasta.assets._BUNDLED">
+<span class="sig-name descname"><span class="pre">_BUNDLED</span></span><a class="reference internal" href="../../../_modules/shasta/assets.html#_BUNDLED"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.assets._BUNDLED" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shasta.assets._search_roots">
+<span class="sig-name descname"><span class="pre">_search_roots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/assets.html#_search_roots"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.assets._search_roots" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shasta.assets.get_asset_path">
+<span class="sig-name descname"><span class="pre">get_asset_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">parts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/assets.html#get_asset_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.assets.get_asset_path" title="Link to this definition"></a></dt>
+<dd><p>Return the first existing path for <code class="docutils literal notranslate"><span class="pre">parts</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;vehicles&quot;,</span> <span class="pre">&quot;x.urdf&quot;</span></code>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shasta.assets.list_maps">
+<span class="sig-name descname"><span class="pre">list_maps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/shasta/assets.html#list_maps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.assets.list_maps" title="Link to this definition"></a></dt>
+<dd><p>Names of the maps that can currently be found.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="shasta.assets.assets_root">
+<span class="sig-name descname"><span class="pre">assets_root</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="reference internal" href="../../../_modules/shasta/assets.html#assets_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#shasta.assets.assets_root" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../actors/vehicles/index.html" class="btn btn-neutral float-left" title="shasta.actors.vehicles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../base_experiment/index.html" class="btn btn-neutral float-right" title="shasta.base_experiment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

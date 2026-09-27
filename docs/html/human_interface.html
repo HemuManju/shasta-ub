@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Human interface &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Build your own map" href="building_maps.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Human interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#controls">Controls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#driving-it-from-python">Driving it from Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Human interface</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/human_interface.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="human-interface">
+<h1>Human interface<a class="headerlink" href="#human-interface" title="Link to this heading"></a></h1>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>shasta<span class="w"> </span>gui<span class="w"> </span>--map<span class="w"> </span>buffalo-medium<span class="w"> </span>--uav-groups<span class="w"> </span><span class="m">6</span><span class="w"> </span>--ugv-groups<span class="w"> </span><span class="m">3</span><span class="w"> </span>--targets<span class="w"> </span><span class="m">3</span><span class="w"> </span>--seed<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>The window shows a top-down, north-up map. Blue triangles are UAVs, red squares are UGVs, cyan dots are street
+nodes, and yellow diamonds are mission targets. Buildings are colour-coded by type (civic, worship, commercial,
+garage/industrial, other).</p>
+<section id="controls">
+<h2>Controls<a class="headerlink" href="#controls" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Action</p></th>
+<th class="head"><p>How</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Select a group</p></td>
+<td><p>Click its marker, or press <code class="docutils literal notranslate"><span class="pre">1</span></code>-<code class="docutils literal notranslate"><span class="pre">9</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Add / remove a group</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Shift</span></code> + click its marker, or <code class="docutils literal notranslate"><span class="pre">Shift</span></code> + <code class="docutils literal notranslate"><span class="pre">1</span></code>-<code class="docutils literal notranslate"><span class="pre">9</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Select several groups</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Shift</span></code> + drag a box on the map</p></td>
+</tr>
+<tr class="row-odd"><td><p>Select by type</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">U</span></code> all UAV groups, <code class="docutils literal notranslate"><span class="pre">G</span></code> all UGV groups, <code class="docutils literal notranslate"><span class="pre">Ctrl+A</span></code> everything (or the buttons at the top of the side panel)</p></td>
+</tr>
+<tr class="row-even"><td><p>Pick a target</p></td>
+<td><p>Click near a street node; a white cross marks it</p></td>
+</tr>
+<tr class="row-odd"><td><p>Send the selection</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Enter</span></code>, the <strong>Send order</strong> button, or double-click the node</p></td>
+</tr>
+<tr class="row-even"><td><p>Send every group</p></td>
+<td><p><strong>Send ALL groups</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Cancel orders</p></td>
+<td><p><strong>Cancel order</strong> (applies to the selected groups)</p></td>
+</tr>
+<tr class="row-even"><td><p>Pause / speed</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Space</span></code>; <code class="docutils literal notranslate"><span class="pre">-</span></code> and <code class="docutils literal notranslate"><span class="pre">+</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Zoom / pan / reset</p></td>
+<td><p>Mouse wheel; right-drag; <code class="docutils literal notranslate"><span class="pre">R</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>3D camera view</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">V</span></code> (a pybullet camera that follows the selected group)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The side panel shows mission progress, the selected group’s battery, ammo, distance and ETA (or a summary when
+several groups are selected), and an event log. The simulation stops when every target is reached or the time
+limit (<code class="docutils literal notranslate"><span class="pre">--time-limit</span></code>) runs out. A group reaches a target when its centre passes within the target radius.</p>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">--map</span></code>, <code class="docutils literal notranslate"><span class="pre">--uav-groups</span></code>, <code class="docutils literal notranslate"><span class="pre">--ugv-groups</span></code>, <code class="docutils literal notranslate"><span class="pre">--targets</span></code>, <code class="docutils literal notranslate"><span class="pre">--time-limit</span></code> (steps), <code class="docutils literal notranslate"><span class="pre">--seed</span></code>.</p>
+</section>
+<section id="driving-it-from-python">
+<h2>Driving it from Python<a class="headerlink" href="#driving-it-from-python" title="Link to this heading"></a></h2>
+<p>The GUI is a thin layer over <a class="reference internal" href="autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander" title="shasta.interaction.SwarmCommander"><code class="xref py py-class docutils literal notranslate"><span class="pre">shasta.interaction.SwarmCommander</span></code></a>, which has no display dependency. Use it
+for scripted “humans”, AI advisors, or automated experiments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">shasta.interaction</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mission</span><span class="p">,</span> <span class="n">SwarmCommander</span>
+
+<span class="n">commander</span> <span class="o">=</span> <span class="n">SwarmCommander</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">Mission</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_map</span><span class="p">(),</span> <span class="mi">3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">commander</span><span class="o">.</span><span class="n">select_type</span><span class="p">(</span><span class="s1">'uav'</span><span class="p">)</span>                         <span class="c1"># or commander.select(0, add=True)</span>
+<span class="n">commander</span><span class="o">.</span><span class="n">send_selected</span><span class="p">(</span><span class="n">commander</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">commander</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">is_complete</span><span class="p">():</span>
+    <span class="n">commander</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">commander</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="building_maps.html" class="btn btn-neutral float-right" title="Build your own map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

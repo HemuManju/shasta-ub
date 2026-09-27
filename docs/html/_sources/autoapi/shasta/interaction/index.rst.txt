@@ -1,0 +1,216 @@
+shasta.interaction
+==================
+
+.. py:module:: shasta.interaction
+
+.. autoapi-nested-parse::
+
+   Human-facing control layer: commands, status, events and mission scoring.
+
+   ``SwarmCommander`` is what a GUI, a scripted "human" or an AI advisor talks to.
+   It has no display dependency, so the same logic is used (and tested) headlessly.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.interaction.Mission
+   shasta.interaction.SwarmCommander
+
+
+Module Contents
+---------------
+
+.. py:class:: Mission
+
+   Target map nodes that groups must reach, with an optional time limit.
+
+   A group counts as reaching a target when its centroid passes within ``radius``
+   metres. The commander stops advancing the simulation once every target is
+   reached or the time limit is hit.
+
+
+   .. py:attribute:: targets
+      :type:  list
+
+
+   .. py:attribute:: radius
+      :type:  float
+      :value: 12.0
+
+
+
+   .. py:attribute:: time_limit
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: reached
+      :type:  dict
+
+
+   .. py:method:: random(world_map, n_targets=3, seed=None, **kwargs)
+      :classmethod:
+
+
+
+   .. py:property:: score
+
+
+   .. py:method:: is_complete()
+
+
+   .. py:method:: is_over(step)
+
+
+.. py:class:: SwarmCommander(env, mission=None, steps_per_update=1)
+
+   Select groups, order them to map nodes, run the simulation, read status.
+
+
+   .. py:attribute:: env
+
+
+   .. py:attribute:: map
+
+
+   .. py:attribute:: groups
+
+
+   .. py:attribute:: mission
+      :value: None
+
+
+
+   .. py:attribute:: steps_per_update
+      :value: 1
+
+
+
+   .. py:attribute:: selection
+
+
+   .. py:attribute:: paused
+      :value: False
+
+
+
+   .. py:attribute:: step_count
+      :value: 0
+
+
+
+   .. py:attribute:: events
+      :value: []
+
+
+
+   .. py:attribute:: orders
+
+
+   .. py:attribute:: _arrived
+
+
+   .. py:attribute:: positions
+
+
+   .. py:method:: log(text)
+
+
+   .. py:method:: _positions(group_id)
+
+
+   .. py:property:: selected
+
+      the most recently selected one.
+
+      :type: The primary group
+
+
+   .. py:method:: select(group_id, add=False)
+
+      Select ``group_id`` alone, or with ``add=True`` toggle it in the current selection.
+
+
+
+   .. py:method:: select_many(group_ids, add=False)
+
+      Select several groups at once (replacing the selection unless ``add``).
+
+
+
+   .. py:method:: select_type(kind=None)
+
+      Select every group of a vehicle type ('uav' or 'ugv'), or all groups if None.
+
+
+
+   .. py:method:: node_position(node)
+
+
+   .. py:method:: nearest_node(xy)
+
+      Map node closest to a simulator (x, y) point.
+
+
+
+   .. py:method:: _order(group_id, node)
+
+
+   .. py:method:: _cancel(group_id)
+
+
+   .. py:method:: _names(group_ids)
+      :staticmethod:
+
+
+
+   .. py:method:: send(group_id, node)
+
+      Order ``group_id`` to travel to ``node`` in formation.
+
+
+
+   .. py:method:: send_groups(group_ids, node)
+
+      Order several groups to the same node (one log line).
+
+
+
+   .. py:method:: send_selected(node)
+
+
+   .. py:method:: send_all(node)
+
+
+   .. py:method:: cancel(group_id)
+
+
+   .. py:method:: cancel_selected()
+
+
+   .. py:method:: toggle_pause()
+
+
+   .. py:method:: path(group_id)
+
+      Remaining route of a group as an (n, 2) array, or None.
+
+
+
+   .. py:method:: update()
+
+      Advance the simulation (unless paused) and refresh derived state.
+
+
+
+   .. py:method:: _check_arrivals()
+
+
+   .. py:method:: status(group_id)
+
+

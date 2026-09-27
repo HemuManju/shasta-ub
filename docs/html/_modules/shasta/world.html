@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.world &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../shasta.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.world</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shasta.world</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="World">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">World</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">World</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Need to specify some parameters</span>
+<div class="viewcode-block" id="World.config">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World.config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="World.actor_ids">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World.actor_ids">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actor_ids</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+
+        <span class="c1"># Setup the phsysics client</span>
+<div class="viewcode-block" id="World.physics_client">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World.physics_client">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="World.load_world_model">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World.load_world_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_world_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Load the URDF model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        read_path : str</span>
+<span class="sd">            The path to the URDF model</span>
+<span class="sd">        """</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">loadURDF</span><span class="p">(</span>
+                <span class="n">read_path</span><span class="p">,</span>
+                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">getQuaternionFromEuler</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+                <span class="n">flags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">URDF_USE_MATERIAL_COLORS_FROM_MTL</span><span class="p">,</span>
+                <span class="n">useFixedBase</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="World.change_camera_position">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World.change_camera_position">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_camera_position</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">camera_distance</span><span class="o">=</span><span class="mf">150.0</span><span class="p">,</span>
+        <span class="n">camera_yaw</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">camera_pitch</span><span class="o">=-</span><span class="mf">89.999</span><span class="p">,</span>
+        <span class="n">camera_target_position</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Change the world camera position</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        camera_distance : float, optional</span>
+<span class="sd">            Camera distance from target, by default 150</span>
+<span class="sd">        camera_yaw : float, optional</span>
+<span class="sd">            Camera yaw, by default 0</span>
+<span class="sd">        camera_pitch : float, optional</span>
+<span class="sd">            Camera pitch, by default -89.999</span>
+<span class="sd">        camera_target_position : list, optional</span>
+<span class="sd">            Camera target position, by default [0, 30, 0]</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camer_distance</span> <span class="o">=</span> <span class="n">camera_distance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera_yaw</span> <span class="o">=</span> <span class="n">camera_yaw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera_pitch</span> <span class="o">=</span> <span class="n">camera_pitch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camera_target_position</span> <span class="o">=</span> <span class="n">camera_target_position</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span><span class="o">.</span><span class="n">resetDebugVisualizerCamera</span><span class="p">(</span>
+            <span class="n">cameraDistance</span><span class="o">=</span><span class="n">camera_distance</span><span class="p">,</span>
+            <span class="n">cameraYaw</span><span class="o">=</span><span class="n">camera_yaw</span><span class="p">,</span>
+            <span class="n">cameraPitch</span><span class="o">=</span><span class="n">camera_pitch</span><span class="p">,</span>
+            <span class="n">cameraTargetPosition</span><span class="o">=</span><span class="n">camera_target_position</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="World.spawn_actor">
+<a class="viewcode-back" href="../../autoapi/shasta/world/index.html#shasta.world.World.spawn_actor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spawn_actor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">,</span> <span class="n">spawn_point</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Spawn the actor at a given point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        actor : object</span>
+<span class="sd">            An actor to spawm</span>
+<span class="sd">        spawn_point : array</span>
+<span class="sd">            Spawn point</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        """</span>
+        <span class="c1"># Check if the physic client is added to the actor</span>
+        <span class="k">if</span> <span class="n">actor</span><span class="o">.</span><span class="n">physics_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">actor</span><span class="o">.</span><span class="n">physics_client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_client</span>
+
+        <span class="c1"># Load the actor</span>
+        <span class="n">actor</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actor_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actor</span><span class="o">.</span><span class="n">get_actor_id</span><span class="p">())</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

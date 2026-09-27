@@ -1,0 +1,57 @@
+shasta.assets
+=============
+
+.. py:module:: shasta.assets
+
+.. autoapi-nested-parse::
+
+   Locate SHASTA assets (vehicle models and maps).
+
+   Search order for a named map or file:
+
+   1. ``$SHASTA_ASSETS`` (a directory you control, e.g. a full copy of the maps)
+   2. ``./assets`` in the current working directory
+   3. the assets bundled inside the installed package
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.assets._BUNDLED
+   shasta.assets.assets_root
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.assets._search_roots
+   shasta.assets.get_asset_path
+   shasta.assets.list_maps
+
+
+Package Contents
+----------------
+
+.. py:data:: _BUNDLED
+
+.. py:function:: _search_roots()
+
+.. py:function:: get_asset_path(*parts)
+
+   Return the first existing path for ``parts`` (e.g. ``"vehicles", "x.urdf"``).
+
+
+.. py:function:: list_maps()
+
+   Names of the maps that can currently be found.
+
+
+.. py:data:: assets_root
+   :value: ''
+
+

@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.preprocessing.utils &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../shasta.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.preprocessing.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shasta.preprocessing.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">osmnx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ox</span>
+
+
+<div class="viewcode-block" id="extract_building_info">
+<a class="viewcode-back" href="../../../autoapi/shasta/preprocessing/utils/index.html#shasta.preprocessing.utils.extract_building_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_building_info</span><span class="p">(</span><span class="n">osm_path</span><span class="p">,</span> <span class="n">save_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Perfrom initial building setup."""</span>
+    <span class="n">read_path</span> <span class="o">=</span> <span class="n">osm_path</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">ox</span><span class="o">.</span><span class="n">graph_from_xml</span><span class="p">(</span><span class="n">read_path</span><span class="p">,</span> <span class="n">retain_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Read building footprints from the local file (no network access needed)</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">ox</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">features_from_xml</span><span class="p">(</span><span class="n">read_path</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'building'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="n">gdf</span><span class="o">.</span><span class="n">geom_type</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">'Polygon'</span><span class="p">,</span> <span class="s1">'MultiPolygon'</span><span class="p">])]</span>
+    <span class="n">buildings_proj</span> <span class="o">=</span> <span class="n">ox</span><span class="o">.</span><span class="n">projection</span><span class="o">.</span><span class="n">project_gdf</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">to_crs</span><span class="o">=</span><span class="s2">"EPSG:4326"</span><span class="p">)</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="mi">4328</span><span class="p">)</span>
+
+    <span class="c1"># Building Info</span>
+    <span class="n">building_info</span> <span class="o">=</span> <span class="n">buildings_proj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Add more information</span>
+    <span class="c1"># Save the dataframe representing buildings</span>
+    <span class="n">building_info</span><span class="p">[</span><span class="s1">'lon'</span><span class="p">]</span> <span class="o">=</span> <span class="n">buildings_proj</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">building_info</span><span class="p">[</span><span class="s1">'lat'</span><span class="p">]</span> <span class="o">=</span> <span class="n">buildings_proj</span><span class="p">[</span><span class="s1">'geometry'</span><span class="p">]</span><span class="o">.</span><span class="n">centroid</span><span class="o">.</span><span class="n">y</span>
+    <span class="n">building_info</span><span class="p">[</span><span class="s1">'area'</span><span class="p">]</span> <span class="o">=</span> <span class="n">buildings_proj</span><span class="o">.</span><span class="n">area</span>
+    <span class="n">building_info</span><span class="p">[</span><span class="s1">'perimeter'</span><span class="p">]</span> <span class="o">=</span> <span class="n">buildings_proj</span><span class="o">.</span><span class="n">length</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">building_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">'height'</span><span class="p">]</span> <span class="o">=</span> <span class="n">buildings_proj</span><span class="p">[</span><span class="s1">'height'</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">building_info</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">'height'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># assumption</span>
+    <span class="n">building_info</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">buildings_proj</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">save_fig</span><span class="p">:</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">osm_path</span><span class="p">)</span>
+        <span class="n">ox</span><span class="o">.</span><span class="n">plot_graph</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="n">ox</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">plot_footprints</span><span class="p">(</span>
+            <span class="n">buildings_proj</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="n">save_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s1">'.jpg'</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">building_info</span></div>
+
+
+
+<div class="viewcode-block" id="CATEGORY_TAGS">
+<a class="viewcode-back" href="../../../autoapi/shasta/preprocessing/utils/index.html#shasta.preprocessing.utils.CATEGORY_TAGS">[docs]</a>
+<span class="n">CATEGORY_TAGS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">'civic'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'courthouse'</span><span class="p">,</span> <span class="s1">'townhall'</span><span class="p">,</span> <span class="s1">'public_building'</span><span class="p">,</span> <span class="s1">'fire_station'</span><span class="p">,</span> <span class="s1">'police'</span><span class="p">,</span>
+        <span class="s1">'post_office'</span><span class="p">,</span> <span class="s1">'school'</span><span class="p">,</span> <span class="s1">'university'</span><span class="p">,</span> <span class="s1">'college'</span><span class="p">,</span> <span class="s1">'hospital'</span><span class="p">,</span> <span class="s1">'library'</span><span class="p">,</span>
+        <span class="s1">'public'</span><span class="p">,</span> <span class="s1">'government'</span><span class="p">,</span> <span class="s1">'civic'</span><span class="p">,</span> <span class="s1">'kindergarten'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'worship'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'place_of_worship'</span><span class="p">,</span> <span class="s1">'church'</span><span class="p">,</span> <span class="s1">'synagogue'</span><span class="p">,</span> <span class="s1">'mosque'</span><span class="p">,</span> <span class="s1">'temple'</span><span class="p">,</span> <span class="s1">'cathedral'</span><span class="p">,</span>
+        <span class="s1">'chapel'</span><span class="p">,</span> <span class="s1">'religious'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'commercial'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'commercial'</span><span class="p">,</span> <span class="s1">'retail'</span><span class="p">,</span> <span class="s1">'office'</span><span class="p">,</span> <span class="s1">'hotel'</span><span class="p">,</span> <span class="s1">'supermarket'</span><span class="p">,</span> <span class="s1">'kiosk'</span><span class="p">,</span>
+        <span class="s1">'restaurant'</span><span class="p">,</span> <span class="s1">'cafe'</span><span class="p">,</span> <span class="s1">'bank'</span><span class="p">,</span> <span class="s1">'shop'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'residential'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'house'</span><span class="p">,</span> <span class="s1">'apartments'</span><span class="p">,</span> <span class="s1">'residential'</span><span class="p">,</span> <span class="s1">'dormitory'</span><span class="p">,</span> <span class="s1">'detached'</span><span class="p">,</span> <span class="s1">'terrace'</span><span class="p">,</span>
+        <span class="s1">'semidetached_house'</span><span class="p">,</span> <span class="s1">'bungalow'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s1">'industrial'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">'garage'</span><span class="p">,</span> <span class="s1">'garages'</span><span class="p">,</span> <span class="s1">'parking'</span><span class="p">,</span> <span class="s1">'industrial'</span><span class="p">,</span> <span class="s1">'warehouse'</span><span class="p">,</span> <span class="s1">'service'</span><span class="p">,</span>
+        <span class="s1">'construction'</span><span class="p">,</span> <span class="s1">'hangar'</span><span class="p">,</span> <span class="s1">'carport'</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="building_category">
+<a class="viewcode-back" href="../../../autoapi/shasta/preprocessing/utils/index.html#shasta.preprocessing.utils.building_category">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">building_category</span><span class="p">(</span><span class="n">building</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">amenity</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Sort an OSM building into civic, worship, commercial, residential, industrial or other."""</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">amenity</span><span class="p">,</span> <span class="n">building</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">category</span><span class="p">,</span> <span class="n">tags</span> <span class="ow">in</span> <span class="n">CATEGORY_TAGS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">category</span>
+    <span class="k">return</span> <span class="s1">'other'</span></div>
+
+
+
+<div class="viewcode-block" id="extract_building_footprints">
+<a class="viewcode-back" href="../../../autoapi/shasta/preprocessing/utils/index.html#shasta.preprocessing.utils.extract_building_footprints">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_building_footprints</span><span class="p">(</span><span class="n">osm_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Building outlines from the local .osm file.</span>
+
+<span class="sd">    Returns a list of ``(outline, category)`` where ``outline`` is an (n, 2)</span>
+<span class="sd">    [lat, lon] array and ``category`` comes from :func:`building_category`.</span>
+<span class="sd">    """</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">ox</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">features_from_xml</span><span class="p">(</span><span class="n">osm_path</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">'building'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="n">footprints</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">gdf</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">category</span> <span class="o">=</span> <span class="n">building_category</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'building'</span><span class="p">),</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'amenity'</span><span class="p">))</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">geometry</span>
+        <span class="k">for</span> <span class="n">polygon</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="s1">'geoms'</span><span class="p">,</span> <span class="p">[</span><span class="n">geometry</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">polygon</span><span class="o">.</span><span class="n">geom_type</span> <span class="o">==</span> <span class="s1">'Polygon'</span><span class="p">:</span>
+                <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">exterior</span><span class="o">.</span><span class="n">xy</span>
+                <span class="n">footprints</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">]),</span> <span class="n">category</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">footprints</span></div>
+
+
+
+<div class="viewcode-block" id="save_buildings_map">
+<a class="viewcode-back" href="../../../autoapi/shasta/preprocessing/utils/index.html#shasta.preprocessing.utils.save_buildings_map">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_buildings_map</span><span class="p">(</span><span class="n">osm_path</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+
+<div class="viewcode-block" id="extract_path_info">
+<a class="viewcode-back" href="../../../autoapi/shasta/preprocessing/utils/index.html#shasta.preprocessing.utils.extract_path_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_path_info</span><span class="p">(</span><span class="n">osm_path</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

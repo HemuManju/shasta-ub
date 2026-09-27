@@ -1,0 +1,191 @@
+shasta.actors.vehicles
+======================
+
+.. py:module:: shasta.actors.vehicles
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.actors.vehicles._UxV
+   shasta.actors.vehicles.UAV
+   shasta.actors.vehicles.UGV
+
+
+Module Contents
+---------------
+
+.. py:class:: _UxV(config=None, init_pos=None, init_orientation=None)
+
+   Bases: :py:obj:`shasta.actors.base.BaseActor`
+
+
+   A point-mass vehicle moved by position commands through a fixed constraint.
+
+
+   .. py:attribute:: type
+      :value: None
+
+
+
+   .. py:attribute:: model
+      :value: None
+
+
+
+   .. py:attribute:: color
+      :value: None
+
+
+
+   .. py:attribute:: altitude
+      :value: None
+
+
+
+   .. py:attribute:: battery_per_meter
+      :value: 0.0
+
+
+
+   .. py:attribute:: vehicle_id
+      :value: 0
+
+
+
+   .. py:attribute:: platoon_id
+      :value: 0
+
+
+
+   .. py:attribute:: idle
+      :value: True
+
+
+
+   .. py:attribute:: ammo
+      :value: 100
+
+
+
+   .. py:attribute:: battery
+      :value: 100
+
+
+
+   .. py:attribute:: functional
+      :value: True
+
+
+
+   .. py:attribute:: speed
+      :value: 2.5
+
+
+
+   .. py:attribute:: search_speed
+      :value: 0.25
+
+
+
+   .. py:method:: load_asset()
+
+      Load the model of the actor into the physics client.
+
+
+
+   .. py:method:: get_pos_and_orientation()
+
+
+   .. py:method:: reset()
+
+      Reset the actor to its initial state.
+
+
+
+   .. py:method:: get_observation()
+
+      Return the observation of the actor.
+
+
+
+   .. py:method:: apply_action(position)
+
+      Move the vehicle to ``position`` (z is fixed by vehicle type).
+
+
+
+   .. py:method:: destroy()
+
+      Remove the actor from the world.
+
+
+
+.. py:class:: UAV(config=None, init_pos=None, init_orientation=None)
+
+   Bases: :py:obj:`_UxV`
+
+
+   Unmanned aerial vehicle (blue).
+
+
+   .. py:attribute:: type
+      :value: 'uav'
+
+
+
+   .. py:attribute:: model
+      :value: 'arial_vehicle_abstract.urdf'
+
+
+
+   .. py:attribute:: color
+      :value: [0, 0, 1, 1]
+
+
+
+   .. py:attribute:: altitude
+      :value: 10.0
+
+
+
+   .. py:attribute:: battery_per_meter
+      :value: 0.01
+
+
+
+.. py:class:: UGV(config=None, init_pos=None, init_orientation=None)
+
+   Bases: :py:obj:`_UxV`
+
+
+   Unmanned ground vehicle (red).
+
+
+   .. py:attribute:: type
+      :value: 'ugv'
+
+
+
+   .. py:attribute:: model
+      :value: 'ground_vehicle_abstract.urdf'
+
+
+
+   .. py:attribute:: color
+      :value: [1, 0, 0, 1]
+
+
+
+   .. py:attribute:: altitude
+      :value: 0.5
+
+
+
+   .. py:attribute:: battery_per_meter
+      :value: 0.004
+
+
+

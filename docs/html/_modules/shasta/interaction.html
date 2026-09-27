@@ -1,0 +1,458 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.interaction &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../shasta.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.interaction</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shasta.interaction</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Human-facing control layer: commands, status, events and mission scoring.</span>
+
+<span class="sd">``SwarmCommander`` is what a GUI, a scripted "human" or an AI advisor talks to.</span>
+<span class="sd">It has no display dependency, so the same logic is used (and tested) headlessly.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">shasta.experiments</span><span class="w"> </span><span class="kn">import</span> <span class="n">GoToNodeExperiment</span>
+
+
+<span class="nd">@dataclass</span>
+<div class="viewcode-block" id="Mission">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Mission</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Target map nodes that groups must reach, with an optional time limit.</span>
+
+<span class="sd">    A group counts as reaching a target when its centroid passes within ``radius``</span>
+<span class="sd">    metres. The commander stops advancing the simulation once every target is</span>
+<span class="sd">    reached or the time limit is hit.</span>
+<span class="sd">    """</span>
+
+<div class="viewcode-block" id="Mission.targets">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.targets">[docs]</a>
+    <span class="n">targets</span><span class="p">:</span> <span class="nb">list</span></div>
+
+<div class="viewcode-block" id="Mission.radius">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.radius">[docs]</a>
+    <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span></div>
+
+<div class="viewcode-block" id="Mission.time_limit">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.time_limit">[docs]</a>
+    <span class="n">time_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Mission.reached">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.reached">[docs]</a>
+    <span class="n">reached</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Mission.random">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.random">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">random</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">world_map</span><span class="p">,</span> <span class="n">n_targets</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">world_map</span><span class="o">.</span><span class="n">get_node_graph</span><span class="p">()</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_targets</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">targets</span><span class="o">=</span><span class="n">targets</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Mission.score">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.score">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reached</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mission.is_complete">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.is_complete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Mission.is_over">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.Mission.is_over">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_over</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span><span class="p">()</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_limit</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SwarmCommander">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SwarmCommander</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Select groups, order them to map nodes, run the simulation, read status."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">mission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">steps_per_update</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">experiment</span><span class="p">,</span> <span class="n">GoToNodeExperiment</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"SwarmCommander needs an env built on GoToNodeExperiment"</span><span class="p">)</span>
+<div class="viewcode-block" id="SwarmCommander.env">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.env">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.map">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.map">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_map</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.groups">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.groups">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">get_actor_groups</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.mission">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.mission">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mission</span> <span class="o">=</span> <span class="n">mission</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.steps_per_update">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.steps_per_update">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steps_per_update</span> <span class="o">=</span> <span class="n">steps_per_update</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.selection">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.selection">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">))]</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.paused">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.paused">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.step_count">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.step_count">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.events">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.events">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.orders">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.orders">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orders</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="SwarmCommander._arrived">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander._arrived">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arrived</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SwarmCommander.positions">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.positions">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">{</span><span class="n">g</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.log">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.log">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">step_count</span><span class="p">,</span> <span class="n">text</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander._positions">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander._positions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">get_pos_and_orientation</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]]</span>
+        <span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="SwarmCommander.selected">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.selected">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The primary group: the most recently selected one."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.select">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.select">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Select ``group_id`` alone, or with ``add=True`` toggle it in the current selection."""</span>
+        <span class="k">if</span> <span class="n">group_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unknown group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">add</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_id</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.select_many">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.select_many">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_ids</span><span class="p">,</span> <span class="n">add</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Select several groups at once (replacing the selection unless ``add``)."""</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group_ids</span> <span class="k">if</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ids</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="k">if</span> <span class="n">add</span> <span class="ow">and</span> <span class="n">g</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">ids</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.select_type">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.select_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Select every group of a vehicle type ('uav' or 'ugv'), or all groups if None."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_many</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">g</span> <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">actors</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">kind</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">actors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">kind</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.node_position">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.node_position">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">get_cartesian_node_position</span><span class="p">(</span><span class="n">node</span><span class="p">))[:</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.nearest_node">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.nearest_node">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nearest_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Map node closest to a simulator (x, y) point."""</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">get_node_graph</span><span class="p">()</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">node_position</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">coords</span> <span class="o">-</span> <span class="n">xy</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))])</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander._order">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander._order">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">set_target</span><span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arrived</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander._cancel">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander._cancel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arrived</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="SwarmCommander._names">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander._names">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_names</span><span class="p">(</span><span class="n">group_ids</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.send">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.send">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Order ``group_id`` to travel to ``node`` in formation."""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2"> ordered to node </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.send_groups">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.send_groups">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_ids</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Order several groups to the same node (one log line)."""</span>
+        <span class="n">group_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group_ids</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="n">group_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">"Group"</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">"Groups"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">(</span><span class="n">group_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> ordered to node </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.send_selected">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.send_selected">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_groups</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">),</span> <span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.send_all">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.send_all">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_groups</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">),</span> <span class="n">node</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.cancel">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.cancel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2"> order cancelled"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.cancel_selected">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.cancel_selected">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancel_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s2">"Group"</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">"Groups"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span><span class="si">}</span><span class="s2"> order cancelled"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.toggle_pause">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.toggle_pause">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toggle_pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">"Paused"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="k">else</span> <span class="s2">"Resumed"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.path">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.path">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Remaining route of a group as an (n, 2) array, or None."""</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">path</span><span class="p">)[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.update">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.update">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Advance the simulation (unless paused) and refresh derived state."""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">paused</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mission</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">is_over</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step_count</span><span class="p">)):</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps_per_update</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="p">{</span><span class="n">g</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_positions</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_arrivals</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander._check_arrivals">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander._check_arrivals">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_arrivals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arrived</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">centroid</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_position</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">experiment</span><span class="o">.</span><span class="n">tolerance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_arrived</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2"> arrived at node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">reached</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">positions</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">centroid</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">centroid</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_position</span><span class="p">(</span><span class="n">target</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">radius</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">reached</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">=</span> <span class="n">group_id</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Target </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2"> reached by group </span><span class="si">{</span><span class="n">group_id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mission</span><span class="o">.</span><span class="n">is_complete</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mission complete in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step_count</span><span class="si">}</span><span class="s2"> steps"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SwarmCommander.status">
+<a class="viewcode-back" href="../../autoapi/shasta/interaction/index.html#shasta.interaction.SwarmCommander.status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_id</span><span class="p">):</span>
+        <span class="n">actors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">positions</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">group_id</span><span class="p">)</span>
+        <span class="n">distance</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">centroid</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_position</span><span class="p">(</span><span class="n">target</span><span class="p">)))</span>
+            <span class="n">eta</span> <span class="o">=</span> <span class="n">distance</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">actors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">speed</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">"group"</span><span class="p">:</span> <span class="n">group_id</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="n">actors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="s2">"size"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">actors</span><span class="p">),</span>
+            <span class="s2">"centroid"</span><span class="p">:</span> <span class="n">centroid</span><span class="p">,</span>
+            <span class="s2">"battery"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">battery</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">])),</span>
+            <span class="s2">"ammo"</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">ammo</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">])),</span>
+            <span class="s2">"target"</span><span class="p">:</span> <span class="n">target</span><span class="p">,</span>
+            <span class="s2">"distance"</span><span class="p">:</span> <span class="n">distance</span><span class="p">,</span>
+            <span class="s2">"eta"</span><span class="p">:</span> <span class="n">eta</span><span class="p">,</span>
+            <span class="s2">"arrived"</span><span class="p">:</span> <span class="n">group_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arrived</span><span class="p">,</span>
+        <span class="p">}</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

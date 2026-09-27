@@ -1,0 +1,6 @@
+shasta.__main__
+===============
+
+.. py:module:: shasta.__main__
+
+

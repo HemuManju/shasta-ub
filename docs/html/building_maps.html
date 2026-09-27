@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build your own map &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Human interface" href="human_interface.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="human_interface.html">Human interface</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Build your own map</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-you-need">What you need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-0-install-java-11-or-newer">Step 0: Install Java 11 or newer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-get-the-openstreetmap-data">Step 1: Get the OpenStreetMap data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-build-the-map">Step 2: Build the map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-use-it">Step 3: Use it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-it-works">How it works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Build your own map</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/building_maps.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="build-your-own-map">
+<h1>Build your own map<a class="headerlink" href="#build-your-own-map" title="Link to this heading"></a></h1>
+<p>SHASTA runs on real places. You pick an area on <a class="reference external" href="https://www.openstreetmap.org">OpenStreetMap</a>, and SHASTA
+turns it into a 3D world (buildings and roads) plus the street graph the vehicles drive on. This takes about
+five minutes and three commands:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>shasta<span class="w"> </span>fetch-osm<span class="w"> </span>--bbox<span class="w"> </span><span class="m">43</span>.000<span class="w"> </span>-78.792<span class="w"> </span><span class="m">43</span>.006<span class="w"> </span>-78.783<span class="w"> </span>-o<span class="w"> </span>campus.osm
+<span class="gp">$ </span>shasta<span class="w"> </span>build-map<span class="w"> </span>campus.osm<span class="w"> </span>--name<span class="w"> </span>campus
+<span class="gp">$ </span>shasta<span class="w"> </span>gui<span class="w"> </span>--map<span class="w"> </span>campus
+</pre></div>
+</div>
+<section id="what-you-need">
+<h2>What you need<a class="headerlink" href="#what-you-need" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">&quot;ihuman-shasta[gui]&quot;</span></code> (see <a class="reference internal" href="installation.html"><span class="doc">Installation</span></a>)</p></li>
+<li><p><strong>Java 11 or newer</strong>, only for the <code class="docutils literal notranslate"><span class="pre">build-map</span></code> step (<a class="reference internal" href="#install-java"><span class="std std-ref">Step 0: Install Java 11 or newer</span></a> below)</p></li>
+<li><p>An internet connection for the first run. It downloads the map data and a one-time 26 MB tool
+(OSM2World) that converts the map to 3D.</p></li>
+</ul>
+</section>
+<section id="step-0-install-java-11-or-newer">
+<span id="install-java"></span><h2>Step 0: Install Java 11 or newer<a class="headerlink" href="#step-0-install-java-11-or-newer" title="Link to this heading"></a></h2>
+<p>Check whether you already have it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>java<span class="w"> </span>-version
+</pre></div>
+</div>
+<p>If it prints <code class="docutils literal notranslate"><span class="pre">11</span></code> or higher (for example <code class="docutils literal notranslate"><span class="pre">openjdk</span> <span class="pre">version</span> <span class="pre">&quot;17.0.9&quot;</span></code>), skip to Step 1. Java 8 is <strong>too old</strong>.
+If the command is not found, pick the easiest option:</p>
+<p><strong>Option A: let SHASTA download it (recommended).</strong> No admin rights needed. It downloads a small Java runtime
+(about 45 MB) into <code class="docutils literal notranslate"><span class="pre">~/.cache/shasta</span></code> and does not touch the rest of your system:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>shasta<span class="w"> </span>setup-java
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">shasta</span> <span class="pre">build-map</span></code> also offers to do this for you if Java is missing.</p>
+<p><strong>Option B: install it yourself.</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>System</p></th>
+<th class="head"><p>Command</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Any</p></td>
+<td><p>Download a JRE 11 or newer from <a class="reference external" href="https://adoptium.net">https://adoptium.net</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Conda</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">conda-forge</span> <span class="pre">openjdk</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Ubuntu / Debian</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt</span> <span class="pre">install</span> <span class="pre">openjdk-11-jre-headless</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>macOS (Homebrew)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">openjdk&#64;11</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Windows</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">winget</span> <span class="pre">install</span> <span class="pre">EclipseAdoptium.Temurin.11.JRE</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Open a new terminal afterwards and run <code class="docutils literal notranslate"><span class="pre">java</span> <span class="pre">-version</span></code> again. SHASTA looks for Java in its own cache first,
+then in <code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code>, then on your <code class="docutils literal notranslate"><span class="pre">PATH</span></code>, and uses the first one that is version 11 or newer.</p>
+</section>
+<section id="step-1-get-the-openstreetmap-data">
+<h2>Step 1: Get the OpenStreetMap data<a class="headerlink" href="#step-1-get-the-openstreetmap-data" title="Link to this heading"></a></h2>
+<p>You need an <code class="docutils literal notranslate"><span class="pre">.osm</span></code> file for your area. Two ways to get one.</p>
+<p><strong>Option A: from the command line.</strong> Give a bounding box as four numbers, <em>south west north east</em>
+(latitude and longitude in decimal degrees):</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>shasta<span class="w"> </span>fetch-osm<span class="w"> </span>--bbox<span class="w"> </span><span class="m">43</span>.000<span class="w"> </span>-78.792<span class="w"> </span><span class="m">43</span>.006<span class="w"> </span>-78.783<span class="w"> </span>-o<span class="w"> </span>campus.osm
+</pre></div>
+</div>
+<p>To find the numbers, open <a class="reference external" href="https://www.openstreetmap.org">https://www.openstreetmap.org</a>, click <strong>Export</strong>, then <strong>Manually select a different
+area</strong> and drag the box. The panel shows the four edges: <em>north</em> (top), <em>west</em> (left), <em>east</em> (right) and <em>south</em>
+(bottom). Reorder them as <code class="docutils literal notranslate"><span class="pre">south</span> <span class="pre">west</span> <span class="pre">north</span> <span class="pre">east</span></code>.</p>
+<p><strong>Option B: export by hand.</strong> In the same <strong>Export</strong> panel, press the blue <strong>Export</strong> button to download a
+<code class="docutils literal notranslate"><span class="pre">map.osm</span></code> file. openstreetmap.org refuses areas with too many objects. If it does, choose a smaller area,
+or use Option A, which has no such limit.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Keep the area to a campus or a few blocks, up to about 2 km across. The 3D world and the simulation get
+slower as the area grows. About 0.5 to 1 km works well for a tutorial.</p>
+</div>
+<p>The public data servers are sometimes busy. <code class="docutils literal notranslate"><span class="pre">fetch-osm</span></code> tries three servers automatically. If all of them
+fail, wait a minute and retry, or use Option B.</p>
+</section>
+<section id="step-2-build-the-map">
+<h2>Step 2: Build the map<a class="headerlink" href="#step-2-build-the-map" title="Link to this heading"></a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>shasta<span class="w"> </span>build-map<span class="w"> </span>campus.osm<span class="w"> </span>--name<span class="w"> </span>campus
+</pre></div>
+</div>
+<p>This creates the folder <code class="docutils literal notranslate"><span class="pre">./assets/campus</span></code> (use <code class="docutils literal notranslate"><span class="pre">--out</span></code> to choose another location). The first run
+downloads the OSM2World tool once into <code class="docutils literal notranslate"><span class="pre">~/.cache/shasta</span></code>. When it finishes you see:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Built map 'campus' in assets/campus (calibration error 0.00 m)
+Try it: shasta demo --map campus
+</pre></div>
+</div>
+<p>The folder contains:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>What it is</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">map.osm</span></code></p></td>
+<td><p>The OpenStreetMap data you gave it. Used to build the street graph and building outlines.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">meshes/map.obj</span></code>, <code class="docutils literal notranslate"><span class="pre">map.obj.mtl</span></code></p></td>
+<td><p>The 3D world (buildings, roads, ground) that pybullet loads.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">coordinates.csv</span></code></p></td>
+<td><p>Matching points that tie map positions (latitude, longitude) to positions in the 3D world.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">environment_collision_free.urdf</span></code></p></td>
+<td><p>The description pybullet loads. Vehicles fly and drive through the world without colliding with it.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--overwrite</span></code> to rebuild a map that already exists.</p>
+</section>
+<section id="step-3-use-it">
+<h2>Step 3: Use it<a class="headerlink" href="#step-3-use-it" title="Link to this heading"></a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>shasta<span class="w"> </span>gui<span class="w"> </span>--map<span class="w"> </span>campus<span class="w">              </span><span class="c1"># human interface</span>
+<span class="gp">$ </span>shasta<span class="w"> </span>demo<span class="w"> </span>--map<span class="w"> </span>campus<span class="w">             </span><span class="c1"># headless demo</span>
+</pre></div>
+</div>
+<p>From Python, set <code class="docutils literal notranslate"><span class="pre">config['experiment']['map_to_use']</span> <span class="pre">=</span> <span class="pre">'campus'</span></code>.</p>
+<p>SHASTA looks for maps in <code class="docutils literal notranslate"><span class="pre">$SHASTA_ASSETS</span></code>, then <code class="docutils literal notranslate"><span class="pre">./assets</span></code> in the folder you run from, then the maps that
+ship with the package. Run <code class="docutils literal notranslate"><span class="pre">shasta</span> <span class="pre">maps</span></code> to see what it can find. To share a map, send the whole folder
+(<code class="docutils literal notranslate"><span class="pre">assets/campus</span></code>). Your colleague puts it in their own <code class="docutils literal notranslate"><span class="pre">assets</span></code> folder or sets <code class="docutils literal notranslate"><span class="pre">SHASTA_ASSETS</span></code> to its
+parent folder.</p>
+</section>
+<section id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>OSM2World converts the OpenStreetMap buildings and roads into a 3D mesh. Our build of it also writes
+<code class="docutils literal notranslate"><span class="pre">coordinates.csv</span></code>: sample points listed once in map coordinates (latitude, longitude) and once in
+simulator coordinates (metres).</p></li>
+<li><p>SHASTA fits an affine transform to those points by least squares. This is how a street node from the map
+ends up at the right place in the 3D world. The <em>calibration error</em> printed by <code class="docutils literal notranslate"><span class="pre">build-map</span></code> is the average
+miss of that fit. It should be well under a metre; a large number means something went wrong with the map.</p></li>
+<li><p>The street graph is built from the roads in <code class="docutils literal notranslate"><span class="pre">map.osm</span></code> (motorways down to service roads). Footpaths, plazas,
+steps and building outlines are ignored, so vehicles only route along roads. Change this with
+<code class="docutils literal notranslate"><span class="pre">config['experiment']['road_types']</span></code>.</p></li>
+</ol>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Java</span> <span class="pre">11+</span> <span class="pre">is</span> <span class="pre">required</span> <span class="pre">to</span> <span class="pre">build</span> <span class="pre">maps</span> <span class="pre">but</span> <span class="pre">was</span> <span class="pre">not</span> <span class="pre">found</span></code></dt><dd><p>Run <code class="docutils literal notranslate"><span class="pre">shasta</span> <span class="pre">setup-java</span></code> or see <a class="reference internal" href="#install-java"><span class="std std-ref">Step 0: Install Java 11 or newer</span></a>. Java 8 does not work.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Could</span> <span class="pre">not</span> <span class="pre">download</span> <span class="pre">OSM2World</span></code></dt><dd><p>The one-time tool download failed (no internet, a proxy or a firewall). Download <code class="docutils literal notranslate"><span class="pre">osm2world.zip</span></code> from the
+project’s GitHub releases (tag <code class="docutils literal notranslate"><span class="pre">osm2world-v1</span></code>), unzip it, and set <code class="docutils literal notranslate"><span class="pre">SHASTA_OSM2WORLD</span></code> to the folder that
+contains <code class="docutils literal notranslate"><span class="pre">OSM2WORLD.jar</span></code> and <code class="docutils literal notranslate"><span class="pre">lib/</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">All</span> <span class="pre">Overpass</span> <span class="pre">servers</span> <span class="pre">failed</span></code></dt><dd><p>The data servers are busy or blocked. Retry in a minute, or export the area from openstreetmap.org
+(Step 1, option B) and pass that file to <code class="docutils literal notranslate"><span class="pre">build-map</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">roads</span> <span class="pre">...</span> <span class="pre">found</span></code></dt><dd><p>The area has no drivable roads (for example a park or a pedestrian-only zone). Choose a different area, or
+include footways with <code class="docutils literal notranslate"><span class="pre">road_types</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">OSM2World</span> <span class="pre">did</span> <span class="pre">not</span> <span class="pre">produce</span> <span class="pre">map.obj</span></code></dt><dd><p>The area may be empty or too large. The message includes the tool’s own output; try a smaller area.</p>
+</dd>
+<dt>The 3D camera view (<code class="docutils literal notranslate"><span class="pre">V</span></code> in the GUI) shows only flat ground</dt><dd><p>The selected vehicles are outside the built area. The street graph can extend slightly past the edge of the
+3D mesh. Pick a group that is over the middle of the map.</p>
+</dd>
+<dt>Working offline (for example at a workshop)</dt><dd><p>Build the maps beforehand while you are online, then copy the <code class="docutils literal notranslate"><span class="pre">assets/&lt;name&gt;</span></code> folders to the other
+machines. Running a map needs no internet and no Java. Only building one does. To keep the tools somewhere
+other than <code class="docutils literal notranslate"><span class="pre">~/.cache/shasta</span></code>, set <code class="docutils literal notranslate"><span class="pre">SHASTA_CACHE</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SHASTA_ASSETS</span></code></p></td>
+<td><p>Folder that holds your maps</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SHASTA_OSM2WORLD</span></code></p></td>
+<td><p>Folder containing <code class="docutils literal notranslate"><span class="pre">OSM2WORLD.jar</span></code> and <code class="docutils literal notranslate"><span class="pre">lib/</span></code> (skips the download)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SHASTA_CACHE</span></code></p></td>
+<td><p>Where the OSM2World tool and the downloaded Java are stored (default <code class="docutils literal notranslate"><span class="pre">~/.cache/shasta</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">JAVA_HOME</span></code></p></td>
+<td><p>A Java installation to use</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="human_interface.html" class="btn btn-neutral float-left" title="Human interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

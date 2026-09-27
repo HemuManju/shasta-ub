@@ -1,0 +1,156 @@
+shasta.gui.map_view
+===================
+
+.. py:module:: shasta.gui.map_view
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.gui.map_view.BACKGROUND
+   shasta.gui.map_view.BUILDING
+   shasta.gui.map_view.BUILDING_EDGE
+   shasta.gui.map_view.STREET
+   shasta.gui.map_view.NODE
+   shasta.gui.map_view.BUILDING_COLORS
+   shasta.gui.map_view.BUILDING_LABELS
+   shasta.gui.map_view.UAV_COLOR
+   shasta.gui.map_view.UGV_COLOR
+   shasta.gui.map_view.TARGET
+   shasta.gui.map_view.TARGET_DONE
+   shasta.gui.map_view.PENDING
+   shasta.gui.map_view.GROUP_TYPE_COLOR
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.gui.map_view.MapView
+
+
+Module Contents
+---------------
+
+.. py:data:: BACKGROUND
+   :value: (22, 25, 30)
+
+
+.. py:data:: BUILDING
+   :value: (54, 60, 70)
+
+
+.. py:data:: BUILDING_EDGE
+   :value: (78, 86, 98)
+
+
+.. py:data:: STREET
+   :value: (112, 120, 134)
+
+
+.. py:data:: NODE
+   :value: (60, 225, 235)
+
+
+.. py:data:: BUILDING_COLORS
+
+.. py:data:: BUILDING_LABELS
+
+.. py:data:: UAV_COLOR
+   :value: (80, 150, 255)
+
+
+.. py:data:: UGV_COLOR
+   :value: (255, 100, 90)
+
+
+.. py:data:: TARGET
+   :value: (255, 200, 60)
+
+
+.. py:data:: TARGET_DONE
+   :value: (90, 220, 130)
+
+
+.. py:data:: PENDING
+   :value: (255, 255, 255)
+
+
+.. py:data:: GROUP_TYPE_COLOR
+
+.. py:class:: MapView(rect, world_map)
+
+   Top-down, north-up view of the map with pan and zoom.
+
+
+   .. py:attribute:: rect
+
+
+   .. py:attribute:: map
+
+
+   .. py:attribute:: footprints
+
+
+   .. py:attribute:: categories
+
+
+   .. py:attribute:: segments
+
+
+   .. py:attribute:: node_ids
+
+
+   .. py:attribute:: node_xy
+
+
+   .. py:attribute:: font
+
+
+   .. py:attribute:: small
+
+
+   .. py:attribute:: _cache
+      :value: None
+
+
+
+   .. py:method:: fit()
+
+
+   .. py:method:: to_screen(xy)
+
+
+   .. py:method:: to_world(sx, sy)
+
+
+   .. py:method:: zoom_at(screen_pos, factor)
+
+
+   .. py:method:: pan(dx, dy)
+
+
+   .. py:method:: nearest_node(screen_pos)
+
+
+   .. py:method:: _static_layer()
+
+
+   .. py:method:: _label(surface, text, pos, color=(230, 230, 235), font=None)
+
+
+   .. py:method:: draw(surface, commander, pending_node=None)
+
+
+   .. py:method:: _draw_legend(surface)
+
+
+   .. py:method:: _draw_vehicle(surface, kind, color, xy, size=7)
+
+
+   .. py:method:: _draw_scale_and_compass(surface)
+
+

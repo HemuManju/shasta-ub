@@ -1,0 +1,36 @@
+shasta.config
+=============
+
+.. py:module:: shasta.config
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   shasta.config._DEFAULT
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   shasta.config.load_config
+
+
+Module Contents
+---------------
+
+.. py:data:: _DEFAULT
+
+.. py:function:: load_config(path=None, **overrides)
+
+   Load the packaged default config, or ``path``, then apply ``overrides``.
+
+   Top-level keys in ``overrides`` replace the loaded values, e.g.
+   ``load_config(headless=True)``. Use ``experiment=...`` to replace the
+   experiment section wholesale.
+
+

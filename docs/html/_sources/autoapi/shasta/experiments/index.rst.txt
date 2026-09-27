@@ -1,0 +1,99 @@
+shasta.experiments
+==================
+
+.. py:module:: shasta.experiments
+
+.. autoapi-nested-parse::
+
+   Ready-made experiments to start from.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.experiments.GoToNodeExperiment
+
+
+Module Contents
+---------------
+
+.. py:class:: GoToNodeExperiment(config, core, experiment_config=None, *args, **kwargs)
+
+   Bases: :py:obj:`shasta.base_experiment.BaseExperiment`
+
+
+   Every actor group flies/drives to a node of the map graph in formation.
+
+   ``env.step(actions)`` takes ``{group_id: node_index}`` (or ``None`` to keep
+   the current targets) and advances the simulation one tick. The observation is
+   ``{group_id: (n_actors, 3) positions}``; the episode ends when every group
+   centroid is within ``tolerance`` metres of its target.
+
+
+   .. py:attribute:: tolerance
+      :value: 3.0
+
+
+
+   .. py:attribute:: planner
+
+
+   .. py:attribute:: formation
+
+
+   .. py:attribute:: targets
+
+
+   .. py:attribute:: paths
+
+
+   .. py:method:: get_action_space()
+
+      Returns the action space
+
+
+
+   .. py:method:: get_observation_space()
+
+      Returns the observation space
+
+
+
+   .. py:method:: set_target(group_id, node)
+
+
+   .. py:method:: apply_actions(actions, core)
+
+      Given the action, applies the action to group or individual actor
+
+      :param action: value outputted by the policy
+
+
+
+   .. py:method:: get_observation(observation, core)
+
+      Function to do all the post processing of observations (sensor data).
+
+      :param sensor_data: dictionary {sensor_name: sensor_data}
+
+      Should return a tuple or list with two items, the processed observations,
+      as well as a variable with additional information about such observation.
+      The information variable can be empty
+
+
+
+   .. py:method:: get_done_status(observation, core)
+
+      Returns whether or not the experiment has to end
+
+
+
+   .. py:method:: compute_reward(observation, core)
+
+      Computes the reward
+
+
+

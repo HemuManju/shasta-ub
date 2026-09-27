@@ -1,0 +1,165 @@
+shasta.gui
+==========
+
+.. py:module:: shasta.gui
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/shasta/gui/app/index
+   /autoapi/shasta/gui/map_view/index
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.gui.ShastaGUI
+
+
+Package Contents
+----------------
+
+.. py:class:: ShastaGUI(commander, size=(1280, 800))
+
+   Human interface: watch the swarm on the map and command groups.
+
+
+   .. py:attribute:: screen
+
+
+   .. py:attribute:: size
+      :value: (1280, 800)
+
+
+
+   .. py:attribute:: commander
+
+
+   .. py:attribute:: map_rect
+
+
+   .. py:attribute:: view
+
+
+   .. py:attribute:: manager
+
+
+   .. py:attribute:: clock
+
+
+   .. py:attribute:: pending
+      :value: None
+
+
+
+   .. py:attribute:: speed_index
+      :value: 0
+
+
+
+   .. py:attribute:: running
+      :value: True
+
+
+
+   .. py:attribute:: dragging
+      :value: False
+
+
+
+   .. py:attribute:: box_start
+      :value: None
+
+
+
+   .. py:attribute:: box_end
+      :value: None
+
+
+
+   .. py:attribute:: last_click
+      :value: (0, None)
+
+
+
+   .. py:attribute:: camera
+      :value: None
+
+
+
+   .. py:attribute:: show_camera
+      :value: False
+
+
+
+   .. py:attribute:: frame
+      :value: 0
+
+
+
+   .. py:attribute:: _texts
+
+
+   .. py:method:: _build_panel()
+
+
+   .. py:method:: _shift()
+
+
+   .. py:method:: select_group(group_id, add=False)
+
+
+   .. py:method:: select_type(kind)
+
+
+   .. py:method:: send_pending()
+
+
+   .. py:method:: send_all_pending()
+
+
+   .. py:method:: toggle_pause()
+
+
+   .. py:method:: _change_speed(delta)
+
+
+   .. py:method:: _apply_speed()
+
+
+   .. py:method:: toggle_camera()
+
+
+   .. py:method:: _marker_hit(pos)
+
+
+   .. py:method:: _map_click(pos)
+
+
+   .. py:method:: _finish_box(end)
+
+
+   .. py:method:: handle_event(event)
+
+
+   .. py:method:: _set_text(key, element, html)
+
+
+   .. py:method:: _refresh_text(force=False)
+
+
+   .. py:method:: draw()
+
+
+   .. py:method:: step(dt=1 / 30)
+
+
+   .. py:method:: run(max_frames=None)
+
+

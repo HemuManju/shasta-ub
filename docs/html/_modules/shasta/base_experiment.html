@@ -1,0 +1,217 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shasta.base_experiment &mdash; SHASTA 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            SHASTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../human_interface.html">Human interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../building_maps.html">Build your own map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autoapi/index.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SHASTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../shasta.html">shasta</a></li>
+      <li class="breadcrumb-item active">shasta.base_experiment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for shasta.base_experiment</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># This work is licensed under the terms of the MIT license.</span>
+<span class="c1"># For a copy, see &lt;https://opensource.org/licenses/MIT&gt;.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+
+
+<div class="viewcode-block" id="BaseExperiment">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseExperiment</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">core</span><span class="p">,</span> <span class="n">experiment_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""The base experiment which other experiments should inherit</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        config : yaml</span>
+<span class="sd">            The experiment configuration file</span>
+<span class="sd">        core : object</span>
+<span class="sd">            The SHASTA core object</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        """</span>
+<div class="viewcode-block" id="BaseExperiment.config">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config</span></div>
+
+<div class="viewcode-block" id="BaseExperiment.core">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.core">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">core</span> <span class="o">=</span> <span class="n">core</span></div>
+
+<div class="viewcode-block" id="BaseExperiment.exp_config">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.exp_config">[docs]</a>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exp_config</span> <span class="o">=</span> <span class="n">experiment_config</span></div>
+
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BaseExperiment.reset">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Called at the beginning and each time the simulation is reset"""</span>
+        <span class="k">pass</span></div>
+
+
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="BaseExperiment.get_action_space">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.get_action_space">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_action_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns the action space"""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="BaseExperiment.get_observation_space">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.get_observation_space">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_observation_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns the observation space"""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseExperiment.get_actions">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.get_actions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns the actions"""</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="BaseExperiment.apply_actions">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.apply_actions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">apply_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">core</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Given the action, applies the action to group or individual actor</span>
+
+<span class="sd">        :param action: value outputted by the policy</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="BaseExperiment.get_observation">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.get_observation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_observation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">,</span> <span class="n">core</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Function to do all the post processing of observations (sensor data).</span>
+
+<span class="sd">        :param sensor_data: dictionary {sensor_name: sensor_data}</span>
+
+<span class="sd">        Should return a tuple or list with two items, the processed observations,</span>
+<span class="sd">        as well as a variable with additional information about such observation.</span>
+<span class="sd">        The information variable can be empty</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseExperiment.get_done_status">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.get_done_status">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_done_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">,</span> <span class="n">core</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns whether or not the experiment has to end"""</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="BaseExperiment.compute_reward">
+<a class="viewcode-back" href="../../autoapi/shasta/base_experiment/index.html#shasta.base_experiment.BaseExperiment.compute_reward">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_reward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">,</span> <span class="n">core</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Computes the reward"""</span>
+        <span class="k">return</span> <span class="ne">NotImplementedError</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Hemanth Manjunatha.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

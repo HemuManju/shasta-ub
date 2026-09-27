@@ -1,0 +1,124 @@
+shasta.core
+===========
+
+.. py:module:: shasta.core
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   shasta.core.ShastaCore
+
+
+Module Contents
+---------------
+
+.. py:class:: ShastaCore(config, actor_groups: dict = None)
+
+   Owns the pybullet physics client, the map and the actors; spawns actors
+   and advances the simulation.
+
+
+   .. py:attribute:: config
+
+
+   .. py:attribute:: actor_groups
+      :value: None
+
+
+
+   .. py:attribute:: world
+
+
+   .. py:attribute:: map
+
+
+   .. py:method:: _setup_physics_client()
+
+      Setup the physics client
+
+      :rtype: None
+
+
+
+   .. py:method:: get_physics_client()
+
+      Ge the physics client
+
+      :returns: The bullet physics client
+      :rtype: object
+
+
+
+   .. py:method:: setup_experiment(experiment_config)
+
+      Load the map and spawn the actors
+
+
+
+   .. py:method:: get_world()
+
+      Get the World object from the simulation
+
+      :returns: The world object
+      :rtype: object
+
+
+
+   .. py:method:: get_map()
+
+      Get the Map object from the simulation
+
+      :returns: The map object
+      :rtype: object
+
+
+
+   .. py:method:: reset()
+
+      This function resets / spawns the actors
+
+
+
+   .. py:method:: spawn_actors()
+
+      Spawn every actor of every group around a random point on the map
+
+
+
+   .. py:method:: get_actor_groups()
+
+      Get the actor groups
+
+      :returns: The actor groups as a dict with group id as the key
+                list of actors as the value
+      :rtype: dict
+
+
+
+   .. py:method:: get_actors_by_group_id(group_id)
+
+      Get a list of actor given by group id
+
+      :param group_id: Group id to be returned
+      :type group_id: int
+
+      :returns: A list of actor given the group id
+      :rtype: list
+
+
+
+   .. py:method:: tick()
+
+      Performs one tick of the simulation, and collect the observations of all actors
+
+
+
+   .. py:method:: close_simulation()
+
+      Close the simulation
+
+
+
