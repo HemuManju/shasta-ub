@@ -8,7 +8,36 @@ import pandas as pd
 import networkx as nx
 
 from shasta.assets import get_asset_path
-from shasta.preprocessing.utils import extract_building_info
+from shasta.preprocessing.utils import extract_building_footprints, extract_building_info
+
+ROAD_TYPES = frozenset({
+    'motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified',
+    'residential', 'living_street', 'service',
+    'motorway_link', 'trunk_link', 'primary_link', 'secondary_link', 'tertiary_link',
+})
+
+
+def _is_road(highway, road_types):
+    values = highway if isinstance(highway, (list, tuple)) else [highway]
+    return any(value in road_types for value in values)
+
+
+def road_graph(osm_path, road_types=ROAD_TYPES):
+    """Street graph from an .osm file using only ``road_types`` (no footpaths, plazas or
+    building outlines), reduced to its largest connected component."""
+    G = ox.graph_from_xml(osm_path, simplify=False, bidirectional='walk')
+    drop = [
+        (u, v, k)
+        for u, v, k, data in G.edges(keys=True, data=True)
+        if not _is_road(data.get('highway'), road_types)
+    ]
+    G.remove_edges_from(drop)
+    G.remove_nodes_from(list(nx.isolates(G)))
+    if G.number_of_edges() == 0:
+        raise ValueError(f"No roads of type {sorted(road_types)} found in {osm_path}")
+    G = ox.simplification.simplify_graph(G)
+    return ox.truncate.largest_component(G, strongly=True)
+
 
 class Map:
     def __init__(self) -> None:
@@ -18,7 +47,8 @@ class Map:
         """Performs initial conversion of the lat lon to cartesian"""
         # Graph
         read_path = self.asset_path + '/map.osm'
-        G = ox.graph_from_xml(read_path, simplify=True, bidirectional='walk')
+        road_types = (self.experiment_config or {}).get('road_types') or ROAD_TYPES
+        G = road_graph(read_path, frozenset(road_types))
         self.node_graph = nx.convert_node_labels_to_integers(G)
 
         # Transformation matrix
@@ -64,6 +94,36 @@ class Map:
         self._affine_transformation_and_graph()
         self._setup_building_info()
         return None
+
+    def get_building_footprints(self):
+        """Building outlines in simulator (x, y) coordinates, as a list of (n, 2) arrays."""
+        if not hasattr(self, '_footprints'):
+            found = extract_building_footprints(self.asset_path + '/map.osm')
+            self._footprints = [self._to_cartesian(outline) for outline, _ in found]
+            self._footprint_categories = [category for _, category in found]
+        return self._footprints
+
+    def get_building_categories(self):
+        """Category of each footprint from :meth:`get_building_footprints`, in the same order."""
+        self.get_building_footprints()
+        return self._footprint_categories
+
+    def get_street_segments(self):
+        """Street polylines in simulator (x, y) coordinates, as a list of (n, 2) arrays."""
+        if not hasattr(self, '_segments'):
+            self._segments = []
+            for u, v, data in self.node_graph.edges(data=True):
+                if 'geometry' in data:
+                    lon, lat = data['geometry'].xy
+                else:
+                    lon = [self.node_graph.nodes[u]['x'], self.node_graph.nodes[v]['x']]
+                    lat = [self.node_graph.nodes[u]['y'], self.node_graph.nodes[v]['y']]
+                self._segments.append(self._to_cartesian(np.column_stack([lat, lon])))
+        return self._segments
+
+    def _to_cartesian(self, lat_lon):
+        padded = np.hstack([np.asarray(lat_lon), np.ones((len(lat_lon), 1))])
+        return (padded @ self.A)[:, :2]
 
     def get_affine_transformation_and_graph(self):
         """Get the transformation matrix and the node graph of the map

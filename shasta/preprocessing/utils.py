@@ -43,6 +43,58 @@ def extract_building_info(osm_path, save_fig=False):
     return building_info
 
 
+CATEGORY_TAGS = {
+    'civic': {
+        'courthouse', 'townhall', 'public_building', 'fire_station', 'police',
+        'post_office', 'school', 'university', 'college', 'hospital', 'library',
+        'public', 'government', 'civic', 'kindergarten',
+    },
+    'worship': {
+        'place_of_worship', 'church', 'synagogue', 'mosque', 'temple', 'cathedral',
+        'chapel', 'religious',
+    },
+    'commercial': {
+        'commercial', 'retail', 'office', 'hotel', 'supermarket', 'kiosk',
+        'restaurant', 'cafe', 'bank', 'shop',
+    },
+    'residential': {
+        'house', 'apartments', 'residential', 'dormitory', 'detached', 'terrace',
+        'semidetached_house', 'bungalow',
+    },
+    'industrial': {
+        'garage', 'garages', 'parking', 'industrial', 'warehouse', 'service',
+        'construction', 'hangar', 'carport',
+    },
+}
+
+
+def building_category(building=None, amenity=None):
+    """Sort an OSM building into civic, worship, commercial, residential, industrial or other."""
+    for value in (amenity, building):
+        for category, tags in CATEGORY_TAGS.items():
+            if isinstance(value, str) and value in tags:
+                return category
+    return 'other'
+
+
+def extract_building_footprints(osm_path):
+    """Building outlines from the local .osm file.
+
+    Returns a list of ``(outline, category)`` where ``outline`` is an (n, 2)
+    [lat, lon] array and ``category`` comes from :func:`building_category`.
+    """
+    gdf = ox.features.features_from_xml(osm_path, tags={'building': True})
+    footprints = []
+    for _, row in gdf.iterrows():
+        category = building_category(row.get('building'), row.get('amenity'))
+        geometry = row.geometry
+        for polygon in getattr(geometry, 'geoms', [geometry]):
+            if polygon.geom_type == 'Polygon':
+                lon, lat = polygon.exterior.xy
+                footprints.append((np.column_stack([lat, lon]), category))
+    return footprints
+
+
 def save_buildings_map(osm_path):
     raise NotImplementedError
 

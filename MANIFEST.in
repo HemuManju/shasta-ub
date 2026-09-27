@@ -1,6 +1,5 @@
 include LICENSE README.md
 recursive-include shasta/data *.yml
 recursive-include shasta/assets *
-prune shasta/preprocessing/lib
-prune shasta/preprocessing/chicago
+prune tools
 global-exclude *.pyc __pycache__ *.jar

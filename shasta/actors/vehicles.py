@@ -14,6 +14,7 @@ class _UxV(BaseActor):
     model = None
     color = None
     altitude = None
+    battery_per_meter = 0.0
 
     def __init__(self, config=None, init_pos=None, init_orientation=None):
         super().__init__(init_pos, init_orientation)
@@ -69,8 +70,16 @@ class _UxV(BaseActor):
 
     def apply_action(self, position):
         """Move the vehicle to ``position`` (z is fixed by vehicle type)."""
-        self.current_pos, _ = self.get_pos_and_orientation()
+        if self.battery <= 0:
+            return
+        previous = self.get_pos_and_orientation()[0]
+        self.current_pos = previous
         position[2] = self.altitude
+        self.battery = max(
+            0.0,
+            self.battery
+            - self.battery_per_meter * float(np.linalg.norm(np.asarray(position[:2]) - previous[:2])),
+        )
         self.physics_client.changeConstraint(self.constraint, position)
 
     def destroy(self):
@@ -86,6 +95,7 @@ class UAV(_UxV):
     model = 'arial_vehicle_abstract.urdf'
     color = [0, 0, 1, 1]
     altitude = 10.0
+    battery_per_meter = 0.01
 
 
 class UGV(_UxV):
@@ -95,3 +105,4 @@ class UGV(_UxV):
     model = 'ground_vehicle_abstract.urdf'
     color = [1, 0, 0, 1]
     altitude = 0.5
+    battery_per_meter = 0.004

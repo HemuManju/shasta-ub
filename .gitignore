@@ -109,3 +109,4 @@ ENV/
 # Data folder
 /data/
 /reports/
+osm2world.zip

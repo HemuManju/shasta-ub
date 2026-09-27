@@ -34,6 +34,8 @@ class GoToNodeExperiment(BaseExperiment):
 
     def set_target(self, group_id, node):
         actors = self.core.get_actors_by_group_id(group_id)
+        for actor in actors:
+            actor.current_pos = actor.get_pos_and_orientation()[0]
         centroid = np.mean([a.current_pos for a in actors], axis=0)
         self.targets[group_id] = node
         self.paths[group_id] = self.planner.find_path(start=centroid, end=node)

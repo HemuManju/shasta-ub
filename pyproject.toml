@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-gui = ["pyglet"]
+gui = ["pygame-ce", "pygame_gui"]
 docs = ["sphinx"]
 test = ["pytest"]
 
@@ -32,7 +32,6 @@ shasta = "shasta.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["shasta", "shasta.*"]
-exclude = ["shasta.preprocessing.lib*", "shasta.preprocessing.chicago*"]
 
 [tool.setuptools.package-data]
 shasta = ["data/*.yml"]
