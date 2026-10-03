@@ -18,7 +18,7 @@ COLORS = {"uav": (80, 160, 255), "ugv": (255, 90, 90)}
 
 
 class WorldView:
-    def __init__(self, commander, size=(800, 500), scale=0.6, draw_fps=10):
+    def __init__(self, commander, size=(800, 500), scale=0.75, draw_fps=10):
         # PyBullet draws the scene on the CPU, which is the slow part. It draws a smaller picture (``scale``) that is then enlarged,
         # and only ``draw_fps`` times a second: the simulation keeps its pace in between.
         self.commander, self.size, self.scale, self.draw_fps = commander, size, scale, draw_fps
@@ -153,7 +153,7 @@ class WorldView:
             clock.tick(30)
 
 
-def play_world(commander, fps=10, quality=70, width=800, scale=0.6):
+def play_world(commander, fps=10, quality=70, width=800, scale=0.75):
     """Show SHaSTA's PyBullet world in 3D in this cell. Click the picture first."""
     def score():
         mission = commander.mission
