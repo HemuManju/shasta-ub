@@ -38,7 +38,10 @@ class GoToNodeExperiment(BaseExperiment):
             actor.current_pos = actor.get_pos_and_orientation()[0]
         centroid = np.mean([a.current_pos for a in actors], axis=0)
         self.targets[group_id] = node
-        self.paths[group_id] = self.planner.find_path(start=centroid, end=node)
+        path = self.planner.find_path(start=centroid, end=node)
+        if len(path) == 0:                      # already at that intersection: the route has no segments, so go to the node itself
+            path = np.array([self.planner.map.get_cartesian_node_position(node)])
+        self.paths[group_id] = path
 
     def apply_actions(self, actions, core):
         for group_id, node in (actions or {}).items():

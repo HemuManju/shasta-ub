@@ -7,6 +7,8 @@ an order for the selected group. Use it with ``play_world(commander)``.
     left-drag: orbit      right-drag: pan      wheel: zoom      click the ground: send the selected group there
     1-9: pick a group     Space: pause         + / -: speed     F: follow the selected group     R: reset the camera
 """
+import time
+
 import numpy as np
 import pygame
 
@@ -16,8 +18,11 @@ COLORS = {"uav": (80, 160, 255), "ugv": (255, 90, 90)}
 
 
 class WorldView:
-    def __init__(self, commander, size=(800, 500)):
-        self.commander, self.size = commander, size
+    def __init__(self, commander, size=(800, 500), scale=0.6, draw_fps=10):
+        # PyBullet draws the scene on the CPU, which is the slow part. It draws a smaller picture (``scale``) that is then enlarged,
+        # and only ``draw_fps`` times a second: the simulation keeps its pace in between.
+        self.commander, self.size, self.scale, self.draw_fps = commander, size, scale, draw_fps
+        self.render_size = (max(80, int(size[0] * scale)), max(50, int(size[1] * scale)))
         self.client = commander.env.core.get_physics_client()
         self.projection = self.client.computeProjectionMatrixFOV(60, size[0] / size[1], 0.5, 3000)
         self.nodes = {n: commander.map.get_cartesian_node_position(n)[:2] for n in commander.map.get_node_graph().nodes}
@@ -95,10 +100,11 @@ class WorldView:
     # ---- drawing ----------------------------------------------------------------------------------------------------
     def draw(self, screen, view, font):
         c = self.commander
-        width, height, rgba, *_ = self.client.getCameraImage(*self.size, viewMatrix=view, projectionMatrix=self.projection,
+        width, height, rgba, *_ = self.client.getCameraImage(*self.render_size, viewMatrix=view, projectionMatrix=self.projection,
                                                             renderer=self.client.ER_TINY_RENDERER)
         picture = np.reshape(np.asarray(rgba, dtype=np.uint8), (height, width, 4))[:, :, :3]
-        screen.blit(pygame.surfarray.make_surface(picture.swapaxes(0, 1)), (0, 0))
+        picture = pygame.surfarray.make_surface(picture.swapaxes(0, 1))
+        screen.blit(pygame.transform.smoothscale(picture, self.size) if self.scale < 1 else picture, (0, 0))
         for target in (c.mission.targets if c.mission else []):                   # the mission's targets
             spot = self.project(np.append(self.nodes[target], 0.0), view)
             if spot:
@@ -129,6 +135,7 @@ class WorldView:
         pygame.init()
         screen, clock = pygame.display.set_mode(self.size), pygame.time.Clock()
         font = pygame.font.Font(None, 20)
+        last_draw = 0.0
         while True:
             view = self._view()
             for event in pygame.event.get():
@@ -139,15 +146,17 @@ class WorldView:
             self.commander.update()
             if self.follow:
                 self.target = np.array(self.commander.status(self.commander.selected)["centroid"][:2], dtype=float)
-            self.draw(screen, self._view(), font)
-            pygame.display.flip()
+            if time.perf_counter() - last_draw >= 1 / self.draw_fps:           # draw a few times a second, not every update
+                self.draw(screen, self._view(), font)
+                pygame.display.flip()
+                last_draw = time.perf_counter()
             clock.tick(30)
 
 
-def play_world(commander, fps=10, quality=70, width=800):
+def play_world(commander, fps=10, quality=70, width=800, scale=0.6):
     """Show SHaSTA's PyBullet world in 3D in this cell. Click the picture first."""
     def score():
         mission = commander.mission
         return f"targets reached {mission.score} of {len(mission.targets)}, {commander.step_count} steps" if mission else ""
-    play_live(WorldView(commander).run, fps=fps, quality=quality, width=width, summary=score,
+    play_live(WorldView(commander, scale=scale, draw_fps=fps).run, fps=fps, quality=quality, width=width, summary=score,
               hint="Click the picture, then drag to look around and click the ground to send the selected group.")
