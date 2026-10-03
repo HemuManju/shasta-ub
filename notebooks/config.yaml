@@ -1,11 +1,11 @@
-# SHASTA tutorial configuration, read by 01_shasta_hsi.ipynb
+# SHaSTA tutorial configuration, read by 01_shasta_hsi.ipynb
 #
-# SHASTA itself reads the top-level simulation keys and `experiment`.
+# SHaSTA itself reads the top-level simulation keys and `experiment`.
 # The sections `swarm`, `mission`, `human` and `collector` are read by the notebook.
-# Edit a value, re-run the notebook from Step 3, and see what changes.
+# Edit a value, re-run the notebook from Step 1, and see what changes.
 
 headless: true          # true: PyBullet runs without a window. false would open the 3D window
-time_step: 1.0          # seconds per step. SHASTA sets PyBullet's fixedTimeStep to time_step / 10
+time_step: 1.0          # seconds per step. SHaSTA sets PyBullet's fixedTimeStep to time_step / 10
 total_time: 300
 use_real_time: false
 
@@ -28,9 +28,6 @@ mission:
 
 human:
   steps_per_update: 6   # simulation steps per GUI frame
-  session_seconds: 40   # length of the recorded session
 
-collector:              # Step 8: the "visit all nodes" experiment
-  n_nodes: 5
-  episodes: 6
-  strategies: [nearest, random]
+collector:              # Step 5: the "visit all nodes" experiment
+  n_nodes: 5            # how many nodes the group must visit

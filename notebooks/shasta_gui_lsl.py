@@ -5,7 +5,7 @@
 
 Start ``tobii_to_lsl.py`` and LabRecorder first. LabRecorder will then record two streams into one XDF
 file: ``Markers`` (this script) and ``Gaze`` (the eye tracker). Upload the file and open it in notebook 1
-(step 10). Run with a real window, i.e. NOT on the hub.
+(Step 8). Run with a real window, i.e. NOT on the hub.
 """
 
 import argparse
