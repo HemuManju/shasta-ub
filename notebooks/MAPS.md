@@ -16,13 +16,16 @@ Playing on a map that is already built needs neither.
 
 Check first: `java -version` should print 11 or higher.
 
-On the tutorial server (conda environment `smc`), as an administrator:
+On the tutorial server, as an administrator, install it for the whole machine so every user's notebook finds it on its `PATH` (a Java installed inside the `smc` conda environment is not on the
+`PATH` of the notebook kernel):
 
 ```bash
-conda activate smc
-conda install -c conda-forge openjdk
+sudo apt-get install -y default-jre-headless
 java -version
 ```
+
+The same applies to SHaSTA itself: install it into the `smc` environment as an administrator (`sudo /opt/tljh/user/envs/smc/bin/python -m pip install ...`), not with a plain `pip install` from a user
+account, which puts it in that one user's `~/.local`.
 
 Anywhere else, without administrator rights (about 45 MB, stored in `~/.cache/shasta`):
 
